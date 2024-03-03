@@ -1,40 +1,79 @@
-// LoginPage.js
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
+import axios from 'axios';
 
-const LoginPage = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default class LoginPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: '',
+      password: '',
+    };
+  }
 
-  const handleLogin = () => {
-    // Implement your login logic here
+  handleLogin = async () => {
+    const { email, password } = this.state;
+  
+    // Validate email and password
+    if (!email || !password) {
+      Alert.alert('Error', 'The email or password cannot be empty.');
+      return;
+    }
+  
+    try {
+      // Make a POST request to your server
+      const response = await axios.post('http://localhost:3002/login', {
+        email,
+        password,
+      });
+  
+      // Handle the response from the server
+      if (response.data.success) {
+        // Authentication successful, navigate to the next screen or perform any other action
+        console.log('Login successful');
+      } else {
+        // Authentication failed, display an error message
+        Alert.alert('Error', 'Invalid email or password');
+        console.log('Login failed');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      // Handle other types of errors (network, server, etc.)
+    }
   };
+  
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Login</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email/Username"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-        <Text>Create an account</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+  render() {
+    const { navigation } = this.props;
+    const { email, password } = this.state;
+
+    return (
+      <View style={styles.container}>
+        <Text style={styles.heading}>Education Management System</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => this.setState({ email: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={(text) => this.setState({ password: text })}
+          secureTextEntry
+        />
+        <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+          <Text>Create an account</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -68,5 +107,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-export default LoginPage;

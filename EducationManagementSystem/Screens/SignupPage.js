@@ -1,8 +1,8 @@
-// SignupPage.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const SignupPage = () => {
+const SignupPage = ({ navigation, onSignupSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -13,7 +13,31 @@ const SignupPage = () => {
   };
 
   const handleSignup = () => {
-    // Implement your signup logic here
+    // Validate email, password, and confirm password
+    if (!email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Both email, password, and confirm password cannot be empty.');
+      return;
+    }
+
+    // Validate password and confirm password match
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Password and confirm password do not match');
+      return;
+    }
+
+    // Call onSignupSuccess if signup is successful
+    onSignupSuccess && onSignupSuccess();
+
+    // For demonstration purposes, log the signup data
+    console.log('Signup data:', {
+      email,
+      password,
+      confirmPassword,
+      selectedRole,
+    });
+
+    // Navigate to the 'Home' screen
+    navigation.navigate('Home');
   };
 
   return (
@@ -21,7 +45,7 @@ const SignupPage = () => {
       <Text style={styles.heading}>Signup</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email/Username"
+        placeholder="Email"
         value={email}
         onChangeText={(text) => setEmail(text)}
       />
@@ -45,12 +69,6 @@ const SignupPage = () => {
         onPress={() => handleRoleChange('student')}
       >
         <Text>Student</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.roleButton, selectedRole === 'parent' && { backgroundColor: 'lightblue' }]}
-        onPress={() => handleRoleChange('parent')}
-      >
-        <Text>Parent</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.roleButton, selectedRole === 'teacher' && { backgroundColor: 'lightblue' }]}

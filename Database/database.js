@@ -16,9 +16,20 @@ const pool = mysql.createPool({
 });
 
 // Use the pool to execute queries
+// app.get('/users', async (req, res) => {
+//   try {
+//     const [rows, fields] = await pool.execute('SELECT * FROM users');
+//     res.status(200).json(rows);
+//   } catch (error) {
+//     console.error('Error fetching data:', error);
+//     res.status(500).json({ message: 'Internal Server Error' });
+//   }
+// });
+
+// Use the pool to execute queries
 app.get('/users', async (req, res) => {
   try {
-    const [rows, fields] = await pool.execute('SELECT * FROM users');
+    const [rows, fields] = await pool.execute('SELECT username, password, email, DATE_FORMAT(dob, "%Y-%m-%d") AS dob, phone_no, student, teacher, admin FROM users');
     res.status(200).json(rows);
   } catch (error) {
     console.error('Error fetching data:', error);
