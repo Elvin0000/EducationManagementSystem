@@ -17,21 +17,21 @@ export default class LoginPage extends Component {
   
     // Validate email and password
     if (!email || !password) {
-      Alert.alert('Error', 'The email or password cannot be empty.');
+      Alert.alert('Error', 'Both email and password are required.');
       return;
     }
   
     try {
       // Make a POST request to your server
-      const response = await axios.post('http://localhost:3002/login', {
-        email,
-        password,
+      const response = await axios.post('http://192.168.136.1:3002/login', {
+        email: this.state.email,  // Make sure to reference 'this.state.email'
+        password: this.state.password,  // Make sure to reference 'this.state.password'
       });
   
       // Handle the response from the server
       if (response.data.success) {
-        // Authentication successful, navigate to the next screen or perform any other action
-        console.log('Login successful');
+        // Authentication successful, navigate to the 'HomeDrawer' navigator
+        this.props.navigation.navigate('HomeDrawer');
       } else {
         // Authentication failed, display an error message
         Alert.alert('Error', 'Invalid email or password');
@@ -44,6 +44,7 @@ export default class LoginPage extends Component {
   };
   
 
+  
   render() {
     const { navigation } = this.props;
     const { email, password } = this.state;

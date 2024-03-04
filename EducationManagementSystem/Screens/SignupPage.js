@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
-const SignupPage = ({ navigation, onSignupSuccess }) => {
+const SignupPage = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,9 +24,6 @@ const SignupPage = ({ navigation, onSignupSuccess }) => {
       return;
     }
 
-    // Call onSignupSuccess if signup is successful
-    onSignupSuccess && onSignupSuccess();
-
     // For demonstration purposes, log the signup data
     console.log('Signup data:', {
       email,
@@ -36,8 +32,8 @@ const SignupPage = ({ navigation, onSignupSuccess }) => {
       selectedRole,
     });
 
-    // Navigate to the 'Home' screen
-    navigation.navigate('Home');
+    // Navigate to the 'HomeDrawer' navigator
+    navigation.navigate('HomeDrawer');
   };
 
   return (

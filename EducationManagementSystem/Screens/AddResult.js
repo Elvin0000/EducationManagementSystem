@@ -50,8 +50,8 @@ const AddResult = ({ navigation }) => {
       return;
     }
 
-    // Navigate to ExamResult and pass the data as a parameter
-    navigation.navigate('ExamResult', {
+    // Navigate to ViewResult and pass the data as a parameter
+    navigation.navigate('ViewResult', {
       studentId,
       examination,
       examDate,

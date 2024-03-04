@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, TextInput, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const ExamResult = ({ route }) => {
+const ViewResult = ({ route }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const navigation = useNavigation();
 
@@ -106,4 +106,4 @@ const ExamResult = ({ route }) => {
   );
 };
 
-export default ExamResult;
+export default ViewResult;
