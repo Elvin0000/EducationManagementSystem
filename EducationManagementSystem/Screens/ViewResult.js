@@ -7,7 +7,7 @@ const ViewResult = ({ route }) => {
   const navigation = useNavigation();
 
   // Retrieve data passed from AddResult page
-  const { studentId, examination, examDate, tableData: initialTableData } = route.params;
+  const { email, examName, examDate, tableData: initialTableData } = route.params;
 
   // Create a copy of initialTableData to track changes during edit mode
   const [tableData, setTableData] = useState([...initialTableData]);
@@ -58,8 +58,8 @@ const ViewResult = ({ route }) => {
 
   return (
     <View>
-      <Text>Student ID: {studentId}</Text>
-      <Text>Examination: {examination}</Text>
+      <Text>Student Email: {email}</Text>
+      <Text>Exam Name: {examName}</Text>
       <Text>Exam Date: {examDate}</Text>
 
       <View style={{ borderStyle: 'solid', borderWidth: 1, borderColor: 'gray', marginBottom: 10 }}>

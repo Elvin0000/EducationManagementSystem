@@ -74,6 +74,41 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Endpoint to retrieve exam data
+app.get('/exams', async (req, res) => {
+  try {
+    // Assuming there is a table named 'examinations' with the necessary columns
+    const [rows, fields] = await pool.execute(
+      'SELECT email, examName, examDate FROM examinations'
+    );
+
+    // Organize data into the required structure for SectionList
+    const examData = [];
+    const emailSet = new Set();
+
+    rows.forEach((row) => {
+      const { email, examName, examDate } = row;
+      // Check if the email is already in the set
+      if (!emailSet.has(email)) {
+        emailSet.add(email);
+        // Add a new section with email as the title
+        examData.push({ email, data: [{ examName, examDate }] });
+      } else {
+        // Find the section with the corresponding email and add the exam to its data
+        const sectionIndex = examData.findIndex((section) => section.email === email);
+        if (sectionIndex !== -1) {
+          examData[sectionIndex].data.push({ examName, examDate });
+        }
+      }
+    });
+
+    res.status(200).json(examData);
+  } catch (error) {
+    console.error('Error fetching exam data:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 
 
 // Define a basic route

@@ -30,15 +30,15 @@ const ProfilePage = () => {
     <View style={styles.container}>
       <Text style={styles.heading}>Profile</Text>
       {!editMode ? (
-        <View style={styles.profileInfo}>
+        <View style={styles.profileInfo1}>
           <Image source={{ uri: profilePic }} style={styles.profilePic} />
-          <Text>Name: {name}</Text>
-          <Text>Date of Birth: {dateOfBirth}</Text>
-          <Text>Phone Number: {phoneNumber}</Text>
-          <Text>Email: {email}</Text>
+          <Text style={styles.profileText}>Name: {name}</Text>
+          <Text style={styles.profileText}>Date of Birth: {dateOfBirth}</Text>
+          <Text style={styles.profileText}>Phone Number: {phoneNumber}</Text>
+          <Text style={styles.profileText}>Email: {email}</Text>
         </View>
       ) : (
-        <View style={styles.profileInfo}>
+        <View style={styles.profileInfo2}>
           <TouchableOpacity onPress={handleProfilePicChange}>
             <Image source={{ uri: profilePic }} style={styles.profilePic} />
             <Text style={styles.changePicText}>Change Profile Picture</Text>
@@ -98,11 +98,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 20,
   },
-  profileInfo: {
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
   profilePic: {
     width: 100,
     height: 100,
@@ -138,6 +133,28 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
   },
+  profileText: {
+    textAlign: 'left',
+    marginBottom: 5,
+  },
+  profileInfo1: {
+    width: '100%',
+    alignItems: 'left',
+    marginBottom: 20,
+  },
+  profileInfo2: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  profilePic: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+    borderRadius: 50,
+  },
+
+  
 });
 
 export default ProfilePage;
