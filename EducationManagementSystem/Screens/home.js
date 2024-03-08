@@ -9,8 +9,8 @@ const Home = () => {
     navigation.navigate('AddResult');
   };
 
-  const handleViewStudentList = () => {
-    navigation.navigate('ViewStudentList');
+  const handleStudentSearch = () => {
+    navigation.navigate('StudentSearch');
   };
 
   const handleUpdateResult = () => {
@@ -35,7 +35,7 @@ const Home = () => {
 
       {/* Buttons to navigate to different screens */}
       <Button title="Add Exam Result" onPress={handleAddResult} />
-      <Button title="View Student List" onPress={handleViewStudentList} />
+      <Button title="StudentSearch" onPress={handleStudentSearch} />
       <Button title="Update Exam Result" onPress={handleUpdateResult} />
       <Button title="Delete Exam Result" onPress={handleDeleteResult} />
       <Button title="Generate Report" onPress={handleGenerateReport} />

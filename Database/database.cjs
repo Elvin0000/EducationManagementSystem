@@ -74,42 +74,43 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Endpoint to retrieve exam data
+// Endpoint to retrieve exam names for a specific student
 app.get('/exams', async (req, res) => {
   try {
-    // Assuming there is a table named 'examinations' with the necessary columns
+    const { email } = req.query; // Use req.query instead of req.params
     const [rows, fields] = await pool.execute(
-      'SELECT email, examName, examDate FROM examinations'
+      'SELECT examName FROM examinations WHERE email = ?',
+      [email]
     );
 
-    // Organize data into the required structure for SectionList
-    const examData = [];
-    const emailSet = new Set();
-
-    rows.forEach((row) => {
-      const { email, examName, examDate } = row;
-      // Check if the email is already in the set
-      if (!emailSet.has(email)) {
-        emailSet.add(email);
-        // Add a new section with email as the title
-        examData.push({ email, data: [{ examName, examDate }] });
-      } else {
-        // Find the section with the corresponding email and add the exam to its data
-        const sectionIndex = examData.findIndex((section) => section.email === email);
-        if (sectionIndex !== -1) {
-          examData[sectionIndex].data.push({ examName, examDate });
-        }
-      }
-    });
-
-    res.status(200).json(examData);
+    const examNames = rows.map((row) => row.examName);
+    res.status(200).json(examNames);
   } catch (error) {
-    console.error('Error fetching exam data:', error);
+    console.error('Error fetching exam names:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
+app.get('/studentsEmail', async (req, res) => {
+  try {
+    const searchTerm = req.query.searchTerm || '';
+    const query = 'SELECT DISTINCT u.email FROM users u ' +
+      'LEFT JOIN examinations e ON u.email = e.email ' +
+      'WHERE u.student = 1 AND (u.email LIKE ? OR e.ExamName LIKE ?)';
 
+    console.log('Executing query:', query);
+
+    const [rows, fields] = await pool.execute(query, [`%${searchTerm}%`, `%${searchTerm}%`]);
+
+    console.log('Fetched student emails:', rows);
+
+    const studentEmails = rows.map((row) => row.email);
+    res.status(200).json(studentEmails);
+  } catch (error) {
+    console.error('Error fetching student emails:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
 // Define a basic route
 app.get('/', (req, res) => {
