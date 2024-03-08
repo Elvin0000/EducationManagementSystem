@@ -5,9 +5,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from './Screens/LoginPage';
 import SignupPage from './Screens/SignupPage';
 import AddResult from './Screens/AddResult';
-import StudentSearch from './Screens/StudentSearch';
+import SearchStudent from './Screens/SearchStudent';
 import HomeDrawerNavigator from './HomeDrawerNavigator';
-import ExamDetails from './Screens/ExamDetails';
+import StudentExam from './Screens/StudentExam';
+import ExamDetailsPage from './Screens/ExamDetailsPage';
 import { AuthProvider } from './AuthContext';
 
 const Stack = createStackNavigator();
@@ -21,8 +22,9 @@ const App = () => {
           <Stack.Screen name="Signup" component={SignupPage} />
           <Stack.Screen name="HomeDrawer" component={HomeDrawerNavigator} />
           <Stack.Screen name="AddResult" component={AddResult} />
-          <Stack.Screen name="StudentSearch" component={StudentSearch} />
-          <Stack.Screen name="ExamDetails" component={ExamDetails} />
+          <Stack.Screen name="SearchStudent" component={SearchStudent} />
+          <Stack.Screen name="StudentExam" component={StudentExam} />
+          <Stack.Screen name="ExamDetailsPage" component={ExamDetailsPage} />
           {/* Add screens for other actions if needed */}
         </Stack.Navigator>
       </NavigationContainer>

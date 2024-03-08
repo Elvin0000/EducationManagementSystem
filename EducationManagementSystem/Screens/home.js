@@ -10,7 +10,7 @@ const Home = () => {
   };
 
   const handleStudentSearch = () => {
-    navigation.navigate('StudentSearch');
+    navigation.navigate('SearchStudent');
   };
 
   const handleUpdateResult = () => {

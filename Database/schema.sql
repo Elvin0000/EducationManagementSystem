@@ -87,10 +87,16 @@ VALUES (3, 'History', 73, 3);
 --Check examination
 SELECT     e.ExamID,     e.ExamName,     e.ExamDate FROM     `examinations` e JOIN     `users` u ON e.email = u.email WHERE     u.email = 'john@example.com' LIMIT 0, 1000
 
---check marks and subject
-`examinations` e ON s.ExamID = e.ExamID
+--Check marks
+SELECT
+    s.SubjectID,
+    s.SubjectName,
+    s.Mark
+FROM
+    `users` u
 JOIN
-    `users` u ON e.email = u.email
+    `examinations` e ON u.email = e.email
+JOIN
+    `subjects` s ON e.ExamID = s.ExamID
 WHERE
-    u.email = 'john@example.com'
-    AND e.ExamName = 'Midterm';
+    u.email = 'john@example.com';

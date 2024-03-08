@@ -75,28 +75,37 @@ app.post('/login', async (req, res) => {
 });
 
 // Endpoint to retrieve exam names for a specific student
-app.get('/exams', async (req, res) => {
+app.get('/studentsExam', async (req, res) => {
   try {
-    const { email } = req.query; // Use req.query instead of req.params
+    const { email } = req.query;
     const [rows, fields] = await pool.execute(
-      'SELECT examName FROM examinations WHERE email = ?',
+      'SELECT ExamID, ExamName, ExamDate FROM examinations WHERE email = ?',
       [email]
     );
 
-    const examNames = rows.map((row) => row.examName);
-    res.status(200).json(examNames);
+    const examsData = rows.map((row) => ({
+      ExamID: row.ExamID,
+      ExamName: row.ExamName,
+      ExamDate: row.ExamDate,
+    }));
+    
+    res.status(200).json(examsData);
   } catch (error) {
-    console.error('Error fetching exam names:', error);
+    console.error('Error fetching exams data:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
+
 app.get('/studentsEmail', async (req, res) => {
   try {
     const searchTerm = req.query.searchTerm || '';
-    const query = 'SELECT DISTINCT u.email FROM users u ' +
-      'LEFT JOIN examinations e ON u.email = e.email ' +
-      'WHERE u.student = 1 AND (u.email LIKE ? OR e.ExamName LIKE ?)';
+    const query = `
+      SELECT DISTINCT u.email
+      FROM users u
+      LEFT JOIN examinations e ON u.email = e.email
+      WHERE u.student = 1 AND (u.email LIKE ? OR e.ExamName LIKE ?)
+    `;
 
     console.log('Executing query:', query);
 
@@ -111,6 +120,48 @@ app.get('/studentsEmail', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+app.get('/studentsExam/Result', async (req, res) => {
+  try {
+    const { email, examId } = req.query;
+
+    // Check if email and examId are defined before proceeding
+    if (!email || !examId) {
+      return res.status(400).json({ message: 'Invalid request. Missing parameters.' });
+    }
+
+    const query = `
+      SELECT
+        s.SubjectName,
+        s.Mark
+      FROM
+        subjects s
+      JOIN
+        examinations e ON s.ExamID = e.ExamID
+      JOIN
+        users u ON e.email = u.email
+      WHERE
+        u.email = ?
+        AND e.ExamID = ?;
+    `;
+
+    // Log the raw SQL query for debugging purposes
+    console.log('Executing query:', query);
+
+    const [rows, fields] = await pool.execute(query, [email, examId]);
+
+    const examResults = rows.map((row) => ({
+      SubjectName: row.SubjectName,
+      Mark: row.Mark,
+    }));
+
+    res.status(200).json(examResults);
+  } catch (error) {
+    console.error('Error fetching exam results:', error);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
+
 
 // Define a basic route
 app.get('/', (req, res) => {
