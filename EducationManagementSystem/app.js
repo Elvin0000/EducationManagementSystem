@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from './Screens/LoginPage';
 import SignupPage from './Screens/SignupPage';
+import HomeScreen from './Screens/Home';
 import AddResult from './Screens/AddResult';
 import SearchStudent from './Screens/SearchStudent';
 import HomeDrawerNavigator from './HomeDrawerNavigator';
@@ -20,6 +21,7 @@ const App = () => {
         <Stack.Navigator initialRouteName="Login" headerMode="none">
           <Stack.Screen name="Login" component={LoginPage} />
           <Stack.Screen name="Signup" component={SignupPage} />
+          <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="HomeDrawer" component={HomeDrawerNavigator} />
           <Stack.Screen name="AddResult" component={AddResult} />
           <Stack.Screen name="SearchStudent" component={SearchStudent} />

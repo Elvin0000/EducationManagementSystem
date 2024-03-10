@@ -10,7 +10,6 @@ const port = 3002;
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 
-
 // Create a MySQL connection pool
 const pool = mysql.createPool({
   host: 'localhost',
@@ -21,17 +20,6 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0,
 });
-
-// Use the pool to execute queries
-// app.get('/users', async (req, res) => {
-//   try {
-//     const [rows, fields] = await pool.execute('SELECT * FROM users');
-//     res.status(200).json(rows);
-//   } catch (error) {
-//     console.error('Error fetching data:', error);
-//     res.status(500).json({ message: 'Internal Server Error' });
-//   }
-// });
 
 // Use the pool to execute queries
 app.get('/users', async (req, res) => {
@@ -73,6 +61,43 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
+
+app.post('/addResult', async (req, res) => {
+  try {
+    const { email, examName, examDate, examID, tableData } = req.body;
+
+    try {
+      // Insert into 'examinations' table
+      const [examResult] = await pool.execute(
+        'INSERT INTO `examinations` (`ExamID`, `ExamName`, `ExamDate`, `email`) VALUES (?, ?, ?, ?)',
+        [examID, examName, examDate, email]
+      );
+
+      // Insert into 'subjects' and 'marks' tables
+      for (const rowData of tableData.slice(1)) {
+        await pool.execute(
+          'INSERT INTO `subjects` (`SubjectID`, `SubjectName`, `ExamID`) VALUES (?, ?, ?)',
+          [rowData[0], rowData[1], examID]
+        );
+
+        await pool.execute(
+          'INSERT INTO `marks` (`SubjectID`, `Mark`, `ExamID`, `email`) VALUES (?, ?, ?, ?)',
+          [rowData[0], rowData[2], examID, email]
+        );
+      }
+
+      res.status(200).json({ message: 'Data added successfully' });
+    } catch (error) {
+      // Rollback the transaction in case of an error
+      console.error('Error adding data to the database:', error);
+      res.status(500).json({ error: 'Error adding data to the database' });
+    }
+  } catch (error) {
+    console.error('Error starting transaction:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 // Endpoint to retrieve exam names for a specific student
 app.get('/studentsExam', async (req, res) => {
@@ -133,9 +158,11 @@ app.get('/studentsExam/Result', async (req, res) => {
     const query = `
       SELECT
         s.SubjectName,
-        s.Mark
+        m.Mark
       FROM
         subjects s
+      JOIN
+        marks m ON s.SubjectID = m.SubjectID AND s.ExamID = m.ExamID
       JOIN
         examinations e ON s.ExamID = e.ExamID
       JOIN
@@ -161,6 +188,7 @@ app.get('/studentsExam/Result', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 });
+
 
 
 // Define a basic route
