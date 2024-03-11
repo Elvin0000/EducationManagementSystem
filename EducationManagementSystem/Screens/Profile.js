@@ -1,13 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-const ProfilePage = () => {
+const ProfilePage = ({ route }) => {
   const [profilePic, setProfilePic] = useState('');
   const [name, setName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [editMode, setEditMode] = useState(false);
+
+  useEffect(() => {
+    // Retrieve the user's email from AsyncStorage
+    const getUserEmail = async () => {
+      try {
+        const storedEmail = await AsyncStorage.getItem('userEmail');
+        if (storedEmail) {
+          setEmail(storedEmail);
+          // Call the API to fetch user profile details based on the email
+          fetchUserProfile(storedEmail);
+        }
+      } catch (error) {
+        console.error('Error retrieving user email from AsyncStorage:', error);
+      }
+    };
+
+    getUserEmail();
+  }, []);
+
+  const fetchUserProfile = async (userEmail) => {
+    try {
+      // Make a GET request to your viewProfile API with email as a query parameter
+      const response = await axios.get(`http://192.168.136.1:3002/viewProfile?email=${userEmail}`);
+    
+      // Update the state with the fetched profile details
+      const userProfile = response.data;
+      setProfilePic(userProfile.profilePic); // Assuming your API returns a profilePic field
+      setName(userProfile.username);
+  
+      // Format the date to yyyy-mm-dd
+      const rawDateOfBirth = new Date(userProfile.dob);
+      const formattedDateOfBirth = `${rawDateOfBirth.getFullYear()}-${(rawDateOfBirth.getMonth() + 1).toString().padStart(2, '0')}-${rawDateOfBirth.getDate().toString().padStart(2, '0')}`;
+      
+      setDateOfBirth(formattedDateOfBirth);
+      setPhoneNumber(userProfile.phone_no);
+    
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      // Handle the error (display an error message or redirect the user)
+    }
+  };
+  
 
   const handleEdit = () => {
     setEditMode(true);
@@ -31,7 +75,7 @@ const ProfilePage = () => {
       <Text style={styles.heading}>Profile</Text>
       {!editMode ? (
         <View style={styles.profileInfo1}>
-          <Image source={{ uri: profilePic }} style={styles.profilePic} />
+          {/* <Image source={{ uri: profilePic }} style={styles.profilePic} /> */}
           <Text style={styles.profileText}>Name: {name}</Text>
           <Text style={styles.profileText}>Date of Birth: {dateOfBirth}</Text>
           <Text style={styles.profileText}>Phone Number: {phoneNumber}</Text>
@@ -40,7 +84,7 @@ const ProfilePage = () => {
       ) : (
         <View style={styles.profileInfo2}>
           <TouchableOpacity onPress={handleProfilePicChange}>
-            <Image source={{ uri: profilePic }} style={styles.profilePic} />
+            {/* <Image source={{ uri: profilePic }} style={styles.profilePic} /> */}
             <Text style={styles.changePicText}>Change Profile Picture</Text>
           </TouchableOpacity>
           <TextInput

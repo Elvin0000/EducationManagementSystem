@@ -62,6 +62,67 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get('/viewProfile', async (req, res) => {
+  try {
+    const { email } = req.query; // Use req.query to get parameters from the query string
+
+    // Check if email is provided
+    if (!email) {
+      return res.status(400).json({ message: 'Invalid request. Missing email parameter.' });
+    }
+
+    // Your SQL query to fetch user profile information
+    const query = `
+      SELECT
+        username,
+        dob,
+        phone_no,
+        student,
+        teacher,
+        admin
+      FROM
+        users
+      WHERE
+        email = ?;
+    `;
+
+    // Log the received email and the raw SQL query for debugging purposes
+    console.log('Received email:', email);
+    console.log('Executing query:', query);
+
+    // Execute the query
+    const [rows, fields] = await pool.execute(query, [email]);
+
+    // Log the query result for debugging purposes
+    console.log('Query result:', rows);
+
+    // Check if the user with the provided email exists
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Extract user profile data
+    const userProfile = {
+      username: rows[0].username,
+      dob: rows[0].dob,
+      phone_no: rows[0].phone_no,
+      student: rows[0].student,
+      teacher: rows[0].teacher,
+      admin: rows[0].admin,
+    };
+
+    // Send the user profile data as a response
+    res.status(200).json(userProfile);
+  } catch (error) {
+    console.error('Error viewing user profile:', error);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
+
+
+
+
+
 app.post('/addResult', async (req, res) => {
   try {
     const { email, examName, examDate, examID, tableData } = req.body;

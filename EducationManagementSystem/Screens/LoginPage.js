@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 export default class LoginPage extends Component {
@@ -30,7 +31,14 @@ export default class LoginPage extends Component {
   
       // Handle the response from the server
       if (response.data.success) {
-        // Authentication successful, navigate to the 'HomeDrawer' navigator
+        // Authentication successful, store the user's email in AsyncStorage
+        try {
+          await AsyncStorage.setItem('userEmail', email);
+        } catch (error) {
+          console.error('Error storing user email in AsyncStorage:', error);
+        }
+  
+        // Navigate to the 'HomeDrawer' navigator
         this.props.navigation.navigate('HomeDrawer');
       } else {
         // Authentication failed, display an error message
@@ -42,6 +50,7 @@ export default class LoginPage extends Component {
       // Handle other types of errors (network, server, etc.)
     }
   };
+  
   
 
   
