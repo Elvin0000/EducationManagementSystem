@@ -121,6 +121,29 @@ app.get('/studentsExam', async (req, res) => {
   }
 });
 
+// Endpoint to delete an exam and associated subjects and marks
+app.delete('/deleteExam', async (req, res) => {
+  try {
+    const { examId } = req.query;
+
+    // Delete marks associated with the exam
+    await pool.execute('DELETE FROM marks WHERE ExamID = ?', [examId]);
+
+    // Delete subjects associated with the exam
+    await pool.execute('DELETE FROM subjects WHERE ExamID = ?', [examId]);
+
+    // Delete the exam
+    await pool.execute('DELETE FROM examinations WHERE ExamID = ?', [examId]);
+
+    res.status(200).json({ message: 'Exam, associated subjects, and marks deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting exam, subjects, and marks:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+
 
 app.get('/studentsEmail', async (req, res) => {
   try {
@@ -157,12 +180,15 @@ app.get('/studentsExam/Result', async (req, res) => {
 
     const query = `
       SELECT
+        e.ExamName,
+        e.ExamDate,
+        s.SubjectID,
         s.SubjectName,
         m.Mark
       FROM
         subjects s
-      JOIN
-        marks m ON s.SubjectID = m.SubjectID AND s.ExamID = m.ExamID
+      LEFT JOIN
+        marks m ON s.SubjectID = m.SubjectID AND s.ExamID = m.ExamID AND m.email = ?
       JOIN
         examinations e ON s.ExamID = e.ExamID
       JOIN
@@ -175,11 +201,14 @@ app.get('/studentsExam/Result', async (req, res) => {
     // Log the raw SQL query for debugging purposes
     console.log('Executing query:', query);
 
-    const [rows, fields] = await pool.execute(query, [email, examId]);
+    const [rows, fields] = await pool.execute(query, [email, email, examId]);
 
     const examResults = rows.map((row) => ({
+      ExamName: row.ExamName,
+      ExamDate: row.ExamDate,
+      SubjectID: row.SubjectID,
       SubjectName: row.SubjectName,
-      Mark: row.Mark,
+      Mark: row.Mark !== null ? row.Mark : 'N/A', // Use 'N/A' if the mark is null
     }));
 
     res.status(200).json(examResults);
@@ -189,6 +218,45 @@ app.get('/studentsExam/Result', async (req, res) => {
   }
 });
 
+app.post('/studentsExam/UpdateResult', async (req, res) => {
+  try {
+    // Ensure that the required parameters are provided
+    const { email, examId, updatedResults } = req.body;
+
+    console.log('Received update request:', {
+      email,
+      examId,
+      updatedResults,
+    });
+
+    if (!email || !examId || !updatedResults) {
+      console.error('Invalid request. Missing parameters.');
+      return res.status(400).json({ message: 'Invalid request. Missing parameters.' });
+    }
+
+    // Your logic to check permission goes here if needed
+
+    // Iterate through updatedResults and update marks in the database
+    for (const result of updatedResults) {
+      const { SubjectID, Mark } = result;
+
+      // Update the mark in the database
+      const updateQuery = `
+        UPDATE marks
+        SET Mark = ?
+        WHERE email = ? AND ExamID = ? AND SubjectID = ?;
+      `;
+
+      await pool.execute(updateQuery, [Mark, email, examId, SubjectID]);
+    }
+
+    console.log('Exam results updated successfully.');
+    res.status(200).json({ message: 'Exam results updated successfully.' });
+  } catch (error) {
+    console.error('Error updating exam results:', error);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
 
 
 // Define a basic route

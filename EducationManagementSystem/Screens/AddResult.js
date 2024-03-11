@@ -4,7 +4,6 @@ import { Table, Row } from 'react-native-table-component';
 import { useNavigation } from '@react-navigation/native';
 
 const AddResult = ({ navigation }) => {
-  const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [examName, setExamName] = useState('');
   const [examDate, setExamDate] = useState('');
@@ -15,8 +14,22 @@ const AddResult = ({ navigation }) => {
     ['', '', '', ''],
   ]);
 
+  // Function to clear the form
+  const clearForm = () => {
+    setEmail('');
+    setExamID('');
+    setExamName('');
+    setExamDate('');
+    setTableData([['Subject ID', 'Subject Name', 'Marks', 'Grade'], ['', '', '', '']]);
+  };
+
+  useEffect(() => {
+    // Clear the form when the component mounts
+    clearForm();
+  }, []);
+
   const addRowHandler = () => {
-    setTableData(prevData => [...prevData, [prevData.length + 1, '', '', '']]);
+    setTableData((prevData) => [...prevData, [prevData.length + 1, '', '', '']]);
   };
 
   const updateTableData = (rowIndex, columnIndex, value) => {
@@ -57,13 +70,13 @@ const AddResult = ({ navigation }) => {
         Alert.alert('Error', 'Please enter an email and examID');
         return;
       }
-  
+
       // Check email validation only when the "Add Result" button is pressed
       if (!validateEmail()) {
         Alert.alert('Error', 'Please enter a valid email');
         return;
       }
-  
+
       const response = await fetch('http://192.168.136.1:3002/addResult', {
         method: 'POST',
         headers: {
@@ -77,23 +90,24 @@ const AddResult = ({ navigation }) => {
           tableData,
         }),
       });
-  
+
       console.log('Table Data:', tableData);
       console.log('Data being sent:', { email, examID, examName, examDate, tableData });
-  
+
       if (!response.ok) {
         const errorMessage = await response.text();
         throw new Error(`Failed to add result: ${errorMessage}`);
       }
       console.log('API Response:', response);
-  
+
       // Show success message
       Alert.alert('Success', 'Result added successfully', [
         {
           text: 'OK',
           onPress: () => {
-            // Navigate back to the home page after clicking OK
+            // Navigate back to the home page after clicking OK and clear the form
             navigation.navigate('Home'); // Change 'Home' to the actual name of your home screen
+            clearForm();
           },
         },
       ]);
@@ -102,37 +116,20 @@ const AddResult = ({ navigation }) => {
       Alert.alert('Error', 'Failed to add result. Please try again.');
     }
   };
-  
 
   return (
     <View>
       <Text>Email:</Text>
-      <TextInput
-        value={email}
-        onChangeText={text => setEmail(text)}
-        placeholder="Enter Email"
-      />
+      <TextInput value={email} onChangeText={(text) => setEmail(text)} placeholder="Enter Email" />
 
       <Text>Exam ID:</Text>
-      <TextInput
-        value={examID}
-        onChangeText={text => setExamID(text)}
-        placeholder="Enter Exam ID"
-      />
+      <TextInput value={examID} onChangeText={(text) => setExamID(text)} placeholder="Enter Exam ID" />
 
       <Text>Exam Name:</Text>
-      <TextInput
-        value={examName}
-        onChangeText={text => setExamName(text)}
-        placeholder="Enter Exam Name"
-      />
+      <TextInput value={examName} onChangeText={(text) => setExamName(text)} placeholder="Enter Exam Name" />
 
       <Text>Exam Date:</Text>
-      <TextInput
-        value={examDate}
-        onChangeText={text => setExamDate(text)}
-        placeholder="Enter Exam Date"
-      />
+      <TextInput value={examDate} onChangeText={(text) => setExamDate(text)} placeholder="Enter Exam Date" />
 
       <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
         <Row data={tableData[0]} style={{ height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }} />
@@ -145,7 +142,7 @@ const AddResult = ({ navigation }) => {
                   <TextInput
                     key={columnIndex}
                     value={cellData}
-                    onChangeText={text => updateTableData(rowIndex + 1, columnIndex, text)}
+                    onChangeText={(text) => updateTableData(rowIndex + 1, columnIndex, text)}
                     style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
                   />
                 );
@@ -154,7 +151,7 @@ const AddResult = ({ navigation }) => {
                   <TextInput
                     key={columnIndex}
                     value={cellData}
-                    onChangeText={text => updateTableData(rowIndex + 1, columnIndex, text)}
+                    onChangeText={(text) => updateTableData(rowIndex + 1, columnIndex, text)}
                     style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
                     editable={columnIndex !== 0}
                   />
