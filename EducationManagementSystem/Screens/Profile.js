@@ -2,23 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
-const ProfilePage = ({ route }) => {
+const ProfilePage = () => {
   const [profilePic, setProfilePic] = useState('');
   const [name, setName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [editMode, setEditMode] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    // Retrieve the user's email from AsyncStorage
     const getUserEmail = async () => {
       try {
         const storedEmail = await AsyncStorage.getItem('userEmail');
         if (storedEmail) {
           setEmail(storedEmail);
-          // Call the API to fetch user profile details based on the email
           fetchUserProfile(storedEmail);
         }
       } catch (error) {
@@ -31,40 +31,82 @@ const ProfilePage = ({ route }) => {
 
   const fetchUserProfile = async (userEmail) => {
     try {
-      // Make a GET request to your viewProfile API with email as a query parameter
       const response = await axios.get(`http://192.168.136.1:3002/viewProfile?email=${userEmail}`);
-    
-      // Update the state with the fetched profile details
       const userProfile = response.data;
-      setProfilePic(userProfile.profilePic); // Assuming your API returns a profilePic field
+      setProfilePic(userProfile.profilePic);
       setName(userProfile.username);
-  
-      // Format the date to yyyy-mm-dd
+
       const rawDateOfBirth = new Date(userProfile.dob);
       const formattedDateOfBirth = `${rawDateOfBirth.getFullYear()}-${(rawDateOfBirth.getMonth() + 1).toString().padStart(2, '0')}-${rawDateOfBirth.getDate().toString().padStart(2, '0')}`;
-      
+
       setDateOfBirth(formattedDateOfBirth);
       setPhoneNumber(userProfile.phone_no);
-    
+
     } catch (error) {
       console.error('Error fetching user profile:', error);
       // Handle the error (display an error message or redirect the user)
     }
   };
-  
 
   const handleEdit = () => {
     setEditMode(true);
   };
 
-  const handleSave = () => {
-    // Implement your save logic here
-    setEditMode(false);
+  const handleSave = async () => {
+    try {
+      const updatedProfile = {
+        username: name,
+        dob: dateOfBirth,
+        phone_no: phoneNumber,
+        email: email,
+      };
+  
+      const response = await axios.post(`http://192.168.136.1:3002/saveProfile?email=${email}`, updatedProfile);
+  
+      console.log('Profile saved successfully:', response.data);
+    } catch (error) {
+      console.error('Error saving profile:', error);
+    } finally {
+      setEditMode(false);
+    }
   };
-
-  const handleDelete = () => {
-    // Implement your delete logic here
+  
+  const handleDelete = async () => {
+    try {
+      // Retrieve the email from AsyncStorage
+      const storedEmail = await AsyncStorage.getItem('userEmail');
+  
+      // Ensure that storedEmail is defined before making the request
+      if (storedEmail) {
+        console.log('Deleting profile with email:', storedEmail);
+  
+        // Make the delete request with the retrieved email
+        const response = await axios.delete(`http://192.168.136.1:3002/deleteProfile?email=${storedEmail}`);
+  
+        // ... rest of the code ...
+      } else {
+        console.error('Email is undefined.');
+      }
+    } catch (error) {
+      // Handle the error (e.g., show an error message to the user)
+      console.error('Error deleting user profile:', error);
+  
+      // Handle 404 specifically, if needed
+      if (error.response && error.response.status === 404) {
+        // Handle 404 error
+        console.log('User not found.');
+      }
+    } finally {
+      navigation.navigate('Login');
+    }
   };
+  
+  
+  
+  
+  
+  
+  
 
   const handleProfilePicChange = () => {
     // Implement logic to change profile picture
@@ -104,12 +146,6 @@ const ProfilePage = ({ route }) => {
             placeholder="Phone Number"
             value={phoneNumber}
             onChangeText={(text) => setPhoneNumber(text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
           />
         </View>
       )}

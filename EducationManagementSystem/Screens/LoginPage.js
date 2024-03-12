@@ -12,6 +12,17 @@ export default class LoginPage extends Component {
       password: '',
     };
   }
+  componentDidMount() {
+    // Clear the form when the component mounts
+    this.clearForm();
+  }
+
+  clearForm = () => {
+    this.setState({
+      email: '',
+      password: '',
+    });
+  };
 
   handleLogin = async () => {
     const { email, password } = this.state;
@@ -40,6 +51,7 @@ export default class LoginPage extends Component {
   
         // Navigate to the 'HomeDrawer' navigator
         this.props.navigation.navigate('HomeDrawer');
+        this.clearForm();
       } else {
         // Authentication failed, display an error message
         Alert.alert('Error', 'Invalid email or password');

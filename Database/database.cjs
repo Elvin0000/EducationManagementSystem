@@ -119,6 +119,112 @@ app.get('/viewProfile', async (req, res) => {
   }
 });
 
+app.post('/saveProfile', async (req, res) => {
+  try {
+    const { email, username, dob, phone_no } = req.body;
+
+    // Check if required parameters are provided
+    if (!email || !username || !dob || !phone_no) {
+      return res.status(400).json({ error: 'Invalid request. Missing required parameters.' });
+    }
+
+    // Your SQL query to update user profile information
+    const query = `
+      UPDATE users
+      SET
+        username = ?,
+        dob = ?,
+        phone_no = ?
+      WHERE
+        email = ?;
+    `;
+
+    // Log the received data and the raw SQL query for debugging purposes
+    console.log('Received data:', req.body);
+    console.log('Executing query:', query);
+
+    // Execute the query
+    const [result] = await pool.execute(query, [username, dob, phone_no, email]);
+
+    // Log the query result for debugging purposes
+    console.log('Query result:', result);
+
+    // Check if the profile was successfully updated
+    if (result.affectedRows > 0) {
+      res.status(200).json({ message: 'Profile updated successfully.' });
+    } else {
+      res.status(404).json({ error: 'User not found or no changes were made.' });
+    }
+  } catch (error) {
+    console.error('Error saving user profile:', error);
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+});
+
+// const query = `
+//   SELECT      
+//     username, 
+//     dob,      
+//     phone_no, 
+//     student,  
+//     teacher,  
+//     admin     
+//   FROM        
+//     users     
+//   WHERE       
+//     email = ?;
+// `;
+
+app.delete('/deleteProfile', async (req, res) => {
+  try {
+    const { email } = req.query;
+    const query = `
+      SELECT      
+        username, 
+        dob,      
+        phone_no, 
+        student,  
+        teacher,  
+        admin     
+      FROM        
+        users     
+      WHERE       
+        email = ?;
+    `;
+    console.log('Received email for deletion:', email);
+
+    const [rows, fields] = await pool.execute(query, [email]);
+
+    // Check if the user with the provided email exists
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Delete from Marks
+    await pool.query('DELETE FROM `marks` WHERE `email` = ?', [email]);
+
+    // Delete from Subjects (This will also delete associated marks)
+    await pool.query('DELETE FROM `subjects` WHERE `ExamID` IN (SELECT `ExamID` FROM `examinations` WHERE `email` = ?)', [email]);
+
+    // Delete from Examinations (This will also delete associated subjects and marks)
+    await pool.query('DELETE FROM `examinations` WHERE `email` = ?', [email]);
+
+    // Delete from Users (This will also delete associated examinations, subjects, and marks)
+    await pool.query('DELETE FROM `users` WHERE `email` = ?', [email]);
+
+    res.status(200).json({ message: 'Profile deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user profile:', error);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
+
+
+
+
+
+
+
 
 
 
@@ -187,6 +293,11 @@ app.delete('/deleteExam', async (req, res) => {
   try {
     const { examId } = req.query;
 
+    // Validate examId
+    if (!examId) {
+      return res.status(400).json({ message: 'Missing examId parameter in the request' });
+    }
+
     // Delete marks associated with the exam
     await pool.execute('DELETE FROM marks WHERE ExamID = ?', [examId]);
 
@@ -202,6 +313,8 @@ app.delete('/deleteExam', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
 
 
 

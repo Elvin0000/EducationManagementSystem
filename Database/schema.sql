@@ -86,14 +86,14 @@ VALUES (2, 85, 1, 'john@example.com');
 INSERT INTO `marks` (`SubjectID`, `Mark`, `ExamID`, `email`)
 VALUES (3, 78, 1, 'john@example.com');
 
---Check Exam Name
+-- Check Exam Name
 SELECT DISTINCT e.`ExamName`
 FROM `examinations` e
 JOIN `marks` m ON e.`ExamID` = m.`ExamID`
 JOIN `users` u ON m.`email` = u.`email`
 WHERE u.`email` = 'john@example.com';
 
---Check Exam Mark
+-- Check Exam Mark
 SELECT s.`SubjectName`, m.`Mark`
 FROM `marks` m
 JOIN `examinations` e ON m.`ExamID` = e.`ExamID`
