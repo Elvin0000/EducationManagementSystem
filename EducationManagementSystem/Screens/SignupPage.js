@@ -7,33 +7,48 @@ const SignupPage = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState('student');
 
-  const handleRoleChange = (role) => {
-    setSelectedRole(role);
+  const handleRoleChange = (selectedRole) => {
+    setSelectedRole(selectedRole);
   };
 
-  const handleSignup = () => {
-    // Validate email, password, and confirm password
+  const handleSignup = async () => {
     if (!email || !password || !confirmPassword) {
       Alert.alert('Error', 'Both email, password, and confirm password cannot be empty.');
       return;
     }
 
-    // Validate password and confirm password match
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Password and confirm password do not match');
       return;
     }
 
-    // For demonstration purposes, log the signup data
-    console.log('Signup data:', {
-      email,
-      password,
-      confirmPassword,
-      selectedRole,
-    });
+    try {
+      const response = await fetch('http://192.168.136.1:3002/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          selectedRole,
+        }),
+      });
 
-    // Navigate to the 'HomeDrawer' navigator
-    navigation.navigate('HomeDrawer');
+      const data = await response.json();
+
+      if (response.ok) {
+        // Signup successful, navigate to home page or perform other actions
+        console.log('User signed up successfully:', data);
+        navigation.navigate('HomeDrawer');
+      } else {
+        // Signup failed, display error message
+        Alert.alert('Error', data.message);
+      }
+    } catch (error) {
+      console.error('Error during signup:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again later.');
+    }
   };
 
   return (

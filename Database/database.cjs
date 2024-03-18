@@ -62,6 +62,46 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Check if email exists in the database
+const checkEmailExists = async (email) => {
+  const [rows, fields] = await pool.execute(
+    'SELECT COUNT(*) AS count FROM users WHERE email = ?',
+    [email]
+  );
+  return rows[0].count > 0;
+};
+
+// Add user to the database
+const addUser = async (email, password, selectedRole) => {
+  const [result, fields] = await pool.execute(
+    'INSERT INTO users (email, password, selectedRole) VALUES (?, ?, ?)',
+    [email, password, selectedRole]
+  );
+  return result.insertId; // Return the ID of the newly inserted user
+};
+
+// API endpoint to handle user signup
+app.post('/signup', async (req, res) => {
+  try {
+    const { email, password, selectedRole } = req.body;
+
+    // Check if email already exists
+    const emailExists = await checkEmailExists(email);
+    if (emailExists) {
+      return res.status(400).json({ success: false, message: 'Email already exists.' });
+    }
+
+    // Add user to the database
+    const userId = await addUser(email, password, selectedRole);
+
+    // Return success response
+    res.status(201).json({ success: true, message: 'User created successfully', userId });
+  } catch (error) {
+    console.error('Error during signup:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
 app.get('/viewProfile', async (req, res) => {
   try {
     const { email } = req.query; // Use req.query to get parameters from the query string

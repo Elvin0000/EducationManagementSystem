@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `student` int DEFAULT 0,
     `teacher` int DEFAULT 0,
     `admin` int DEFAULT 0
+    `selectedRole` varchar(10)
 );
 
 -- Table for Examinations
