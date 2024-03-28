@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const SignupPage = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -16,12 +18,12 @@ const SignupPage = ({ navigation }) => {
       Alert.alert('Error', 'Both email, password, and confirm password cannot be empty.');
       return;
     }
-
+  
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Password and confirm password do not match');
       return;
     }
-
+  
     try {
       const response = await fetch('http://192.168.136.1:3002/signup', {
         method: 'POST',
@@ -34,12 +36,24 @@ const SignupPage = ({ navigation }) => {
           selectedRole,
         }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
-        // Signup successful, navigate to home page or perform other actions
-        console.log('User signed up successfully:', data);
+        // Signup successful, store user data in AsyncStorage
+        const userData = {
+          email: email,
+          student: 0,
+          teacher: 0,
+          admin: 0,
+          selectedRole: selectedRole,
+        };
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
+  
+        // Log user data from AsyncStorage
+        console.log('User data stored in AsyncStorage:', userData);
+  
+        // Navigate to the 'HomeDrawer' navigator
         navigation.navigate('HomeDrawer');
       } else {
         // Signup failed, display error message
@@ -50,6 +64,8 @@ const SignupPage = ({ navigation }) => {
       Alert.alert('Error', 'An unexpected error occurred. Please try again later.');
     }
   };
+  
+  
 
   return (
     <View style={styles.container}>
