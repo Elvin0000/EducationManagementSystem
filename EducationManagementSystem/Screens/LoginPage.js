@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -12,6 +11,7 @@ export default class LoginPage extends Component {
       password: '',
     };
   }
+
   componentDidMount() {
     // Clear the form when the component mounts
     this.clearForm();
@@ -26,29 +26,43 @@ export default class LoginPage extends Component {
 
   handleLogin = async () => {
     const { email, password } = this.state;
-  
+
     // Validate email and password
     if (!email || !password) {
       Alert.alert('Error', 'Both email and password are required.');
       return;
     }
-  
+
     try {
       // Make a POST request to your server
       const response = await axios.post('http://192.168.136.1:3002/login', {
-        email: this.state.email,  // Make sure to reference 'this.state.email'
-        password: this.state.password,  // Make sure to reference 'this.state.password'
+        email: this.state.email,
+        password: this.state.password,
       });
-  
+
       // Handle the response from the server
       if (response.data.success) {
-        // Authentication successful, store the user's email in AsyncStorage
+        // Authentication successful, fetch user details
         try {
-          await AsyncStorage.setItem('userEmail', email);
+          const userDetailsResponse = await axios.get(`http://192.168.136.1:3002/userDetails?email=${email}`);
+          const { student, teacher, admin, selectedRole } = userDetailsResponse.data.userDetails;
+
+          // Store user data in AsyncStorage
+          const userData = {
+            email: email,
+            student: student,
+            teacher: teacher,
+            admin: admin,
+            selectedRole: selectedRole,
+          };
+          await AsyncStorage.setItem('userData', JSON.stringify(userData));
+
+          // Log user data from AsyncStorage
+          this.debugAsyncStorage();
         } catch (error) {
-          console.error('Error storing user email in AsyncStorage:', error);
+          console.error('Error fetching user details or storing data in AsyncStorage:', error);
         }
-  
+
         // Navigate to the 'HomeDrawer' navigator
         this.props.navigation.navigate('HomeDrawer');
         this.clearForm();
@@ -62,10 +76,17 @@ export default class LoginPage extends Component {
       // Handle other types of errors (network, server, etc.)
     }
   };
-  
-  
 
-  
+  debugAsyncStorage = async () => {
+    try {
+      const allKeys = await AsyncStorage.getAllKeys();
+      const allItems = await AsyncStorage.multiGet(allKeys);
+      console.log('All AsyncStorage keys:', allItems);
+    } catch (error) {
+      console.error('Error debugging AsyncStorage:', error);
+    }
+  };
+
   render() {
     const { navigation } = this.props;
     const { email, password } = this.state;

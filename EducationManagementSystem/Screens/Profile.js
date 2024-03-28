@@ -14,19 +14,21 @@ const ProfilePage = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    const getUserEmail = async () => {
+    const getUserData = async () => {
       try {
-        const storedEmail = await AsyncStorage.getItem('userEmail');
-        if (storedEmail) {
-          setEmail(storedEmail);
-          fetchUserProfile(storedEmail);
+        const userDataString = await AsyncStorage.getItem('userData');
+        if (userDataString) {
+          const userData = JSON.parse(userDataString);
+          const { email } = userData;
+          setEmail(email);
+          fetchUserProfile(email);
         }
       } catch (error) {
-        console.error('Error retrieving user email from AsyncStorage:', error);
+        console.error('Error retrieving user data from AsyncStorage:', error);
       }
     };
 
-    getUserEmail();
+    getUserData();
   }, []);
 
   const fetchUserProfile = async (userEmail) => {

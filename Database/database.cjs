@@ -62,6 +62,41 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get('/userDetails', async (req, res) => {
+  try {
+    const userEmail = req.query.email;
+
+    // Query the database to fetch user details
+    const [userDataRows, userDataFields] = await pool.execute(
+      'SELECT email, student, teacher, admin, selectedRole FROM users WHERE email = ?',
+      [userEmail]
+    );
+
+    // Check if user details were found
+    if (userDataRows.length > 0) {
+      // Extract user authentication details
+      const userDetails = {
+        email: userDataRows[0].email,
+        student: userDataRows[0].student,
+        teacher: userDataRows[0].teacher,
+        admin: userDataRows[0].admin,
+        selectedRole: userDataRows[0].selectedRole
+      };
+
+      // Send user details in the response
+      res.status(200).json({ success: true, userDetails });
+    } else {
+      // User details not found
+      res.status(404).json({ success: false, message: 'User details not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+
 // Check if email exists in the database
 const checkEmailExists = async (email) => {
   const [rows, fields] = await pool.execute(
