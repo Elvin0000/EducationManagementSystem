@@ -1,5 +1,6 @@
 const express = require('express');
 // const cors = require('cors');
+
 const mysql = require('mysql2/promise');
 
 const app = express();
@@ -7,7 +8,6 @@ const port = 3002;
 
 // // Use the CORS middleware
 // app.use(cors());
-
 app.use(express.json()); // Middleware to parse JSON request bodies
 
 // Create a MySQL connection pool
@@ -506,6 +506,76 @@ app.post('/studentsExam/UpdateResult', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 });
+
+// Endpoint to post a new question
+app.post('/questions', async (req, res) => {
+  const { question_text, asked_by } = req.body;
+  try {
+    const [result] = await pool.query('INSERT INTO questions (question_text, asked_by) VALUES (?, ?)', [question_text, asked_by]);
+    res.status(201).json({ success: true, message: 'Question asked successfully', question_id: result.insertId });
+  } catch (error) {
+    console.error('Error asking question:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to get all questions
+app.get('/questions', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM questions');
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to get a single question by ID
+app.get('/questions/:question_id', async (req, res) => {
+  const { question_id } = req.params;
+  try {
+    const query = 'SELECT * FROM questions WHERE question_id = ?';
+    const [rows] = await pool.execute(query, [question_id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Question not found' });
+    }
+    res.json(rows[0]);
+  } catch (error) {
+    console.error('Error fetching question:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to get answers for a specific question
+app.get('/questions/:question_id/answers', async (req, res) => {
+  const { question_id } = req.params;
+  try {
+    const query = 'SELECT * FROM answers WHERE question_id = ?';
+    const [rows] = await pool.execute(query, [question_id]);
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching answers:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to post a new answer for a specific question
+app.post('/questions/:question_id/answers', async (req, res) => {
+  const { question_id } = req.params;
+  const { answer_text, answered_by } = req.body;
+  try {
+    const query = 'INSERT INTO answers (answer_text, answered_by, question_id) VALUES (?, ?, ?)';
+    const [result] = await pool.execute(query, [answer_text, answered_by, question_id]);
+    res.status(201).json({ success: true, message: 'Answer posted successfully', answer_id: result.insertId });
+  } catch (error) {
+    console.error('Error answering question:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+
+
 
 
 // Define a basic route

@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS ems;
 USE ems;
-
+DROP TABLE IF EXISTS `answers`;
+DROP TABLE IF EXISTS `questions`;
 DROP TABLE IF EXISTS `marks`;
 DROP TABLE IF EXISTS `subjects`;
 DROP TABLE IF EXISTS `examinations`;
@@ -14,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `phone_no` varchar(15),
     `student` int DEFAULT 0,
     `teacher` int DEFAULT 0,
-    `admin` int DEFAULT 0
+    `admin` int DEFAULT 0,
     `selectedRole` varchar(10)
 );
 
@@ -46,6 +47,38 @@ CREATE TABLE IF NOT EXISTS `marks` (
     FOREIGN KEY (`email`) REFERENCES `users`(`email`),
     FOREIGN KEY (`SubjectID`) REFERENCES `subjects`(`SubjectID`)
 );
+
+CREATE TABLE questions (
+    question_id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    asked_by VARCHAR(255) NOT NULL,
+    asked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    -- Additional fields related to the question can be added here
+);
+
+CREATE TABLE answers (
+    answer_id INT AUTO_INCREMENT PRIMARY KEY,
+    answer_text TEXT NOT NULL,
+    answered_by VARCHAR(255) NOT NULL,
+    answered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    question_id INT,
+    FOREIGN KEY (question_id) REFERENCES questions(question_id)
+    -- Additional fields related to the answer can be added here
+);
+
+-- Inserting sample questions
+INSERT INTO questions (question_text, asked_by) VALUES 
+('What is the capital of France?', 'test1@example.com'),
+('What is the largest mammal on Earth?', 'test1@example.com'),
+('How does photosynthesis work?', 'test1@example.com');
+
+-- Inserting sample answers
+INSERT INTO answers (answer_text, answered_by, question_id) VALUES
+('The capital of France is Paris.', 'test1@example.com', 1),
+('The largest mammal on Earth is the blue whale.', 'test1@example.com', 2),
+('Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll.', 'test1@example.com', 3);
+('I dk', 'test1@example.com', 3);
+
 
 -- Inserting data for users
 INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`)

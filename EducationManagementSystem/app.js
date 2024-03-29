@@ -10,6 +10,9 @@ import SearchStudent from './Screens/SearchStudent';
 import HomeDrawerNavigator from './HomeDrawerNavigator';
 import StudentExam from './Screens/StudentExam';
 import ExamDetailsPage from './Screens/ExamDetailsPage';
+import OnlineAcademicAssistant from './Screens/OnlineAcademicAssistant';
+import OnlineAskQuestion from './Screens/OnlineAskQuestion';
+import OnlineAnswerQuestion from './Screens/OnlineAnswerQuestion';
 import { AuthProvider } from './AuthContext';
 
 const Stack = createStackNavigator();
@@ -27,6 +30,9 @@ const App = () => {
           <Stack.Screen name="SearchStudent" component={SearchStudent} />
           <Stack.Screen name="StudentExam" component={StudentExam} />
           <Stack.Screen name="ExamDetailsPage" component={ExamDetailsPage} />
+          <Stack.Screen name="OnlineAcademicAssistant" component={OnlineAcademicAssistant} />
+          <Stack.Screen name="OnlineAskQuestion" component={OnlineAskQuestion} />
+          <Stack.Screen name="OnlineAnswerQuestion" component={OnlineAnswerQuestion} />
           {/* Add screens for other actions if needed */}
         </Stack.Navigator>
       </NavigationContainer>
