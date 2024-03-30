@@ -574,6 +574,123 @@ app.post('/questions/:question_id/answers', async (req, res) => {
 });
 
 
+// Endpoint to get all student emails
+app.get('/approveStudents', async (req, res) => {
+  try {
+    // Query to select emails of students
+    const query = 'SELECT email FROM users WHERE selectedRole = "student"';
+    // Execute the query
+    const [rows] = await pool.query(query);
+    // Extract emails from the query result
+    const studentEmails = rows.map(row => row.email);
+    // Send the emails as response
+    res.status(200).json(studentEmails);
+  } catch (error) {
+    console.error('Error fetching student emails:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+app.put('/users/:email/approveStudent', async (req, res) => {
+  const email = req.params.email;
+  console.log('Received request to approve user with email:', email);
+
+  try {
+    // Execute the database query
+    await pool.query('UPDATE users SET student = ?, selectedRole = ? WHERE email = ?', [1, null, email]);
+
+    // This code will run after the query is completed successfully
+    console.log('User role updated successfully.');
+    
+    // Send response indicating successful approval
+    res.status(200).json({ success: true, message: 'User has been approved as a student' });
+  } catch (error) {
+    // Handle any errors that occur during the query execution
+    console.error('Error updating user role:', error);
+
+    // Send response indicating failure due to internal server error
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+
+// API endpoint to reject a student
+app.put('/users/:email/rejectStudent', async (req, res) => {
+  const email = req.params.email;
+  console.log('Received request to reject user with email:', email);
+
+  try {
+    // Update the user's selectedRole to null
+    await pool.query('UPDATE users SET selectedRole = ? WHERE email = ?', [null, email]);
+
+    console.log('User with email', email, 'has been rejected.');
+
+    res.status(200).json({ success: true, message: 'User has been rejected' });
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to get all teacher emails
+app.get('/approveTeachers', async (req, res) => {
+  try {
+    // Query to select emails of teachers
+    const query = 'SELECT email FROM users WHERE selectedRole = "teacher"';
+    // Execute the query
+    const [rows] = await pool.query(query);
+    // Extract emails from the query result
+    const teacherEmails = rows.map(row => row.email);
+    // Send the emails as response
+    res.status(200).json(teacherEmails);
+  } catch (error) {
+    console.error('Error fetching teacher emails:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+app.put('/users/:email/approveTeacher', async (req, res) => {
+  const email = req.params.email;
+  console.log('Received request to approve user with email:', email);
+
+  try {
+    // Execute the database query
+    await pool.query('UPDATE users SET teacher = ?, selectedRole = ? WHERE email = ?', [1, null, email]);
+
+    // This code will run after the query is completed successfully
+    console.log('User role updated successfully.');
+    
+    // Send response indicating successful approval
+    res.status(200).json({ success: true, message: 'User has been approved as a teacher' });
+  } catch (error) {
+    // Handle any errors that occur during the query execution
+    console.error('Error updating user role:', error);
+
+    // Send response indicating failure due to internal server error
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+
+// API endpoint to reject a teacher
+app.put('/users/:email/rejectTeacher', async (req, res) => {
+  const email = req.params.email;
+  console.log('Received request to reject user with email:', email);
+
+  try {
+    // Update the user's selectedRole to null
+    await pool.query('UPDATE users SET selectedRole = ? WHERE email = ?', [null, email]);
+
+    console.log('User with email', email, 'has been rejected.');
+
+    res.status(200).json({ success: true, message: 'User has been rejected' });
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
 
 
 

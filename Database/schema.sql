@@ -72,23 +72,22 @@ INSERT INTO questions (question_text, asked_by) VALUES
 ('What is the largest mammal on Earth?', 'test1@example.com'),
 ('How does photosynthesis work?', 'test1@example.com');
 
--- Inserting sample answers
 INSERT INTO answers (answer_text, answered_by, question_id) VALUES
 ('The capital of France is Paris.', 'test1@example.com', 1),
 ('The largest mammal on Earth is the blue whale.', 'test1@example.com', 2),
-('Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll.', 'test1@example.com', 3);
+('Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll.', 'test1@example.com', 3),
 ('I dk', 'test1@example.com', 3);
 
 
 -- Inserting data for users
-INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`)
-VALUES ('John Doe', 'abcdef', 'john@example.com', '1990-01-01', '0123456789', 1, 0, 0);
+INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
+VALUES ('John Doe', 'abcdef', 'john@example.com', '1990-01-01', '0123456789', 0, 0, 0,'student');
 
-INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`)
-VALUES ('Test1', 'test', 'test1@example.com', '1990-01-01', '0123456789', 1, 0, 0);
+INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
+VALUES ('Test1', 'test', 'test1@example.com', '1990-01-01', '0123456789', 0, 0, 0,'student');
 
-INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`)
-VALUES ('Test2', 'test', 'test2@example.com', '1990-01-01', '0123456789', 1, 0, 0);
+INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
+VALUES ('Test2', 'test', 'test2@example.com', '1990-01-01', '0123456789', 0, 0, 0,'teacher');
 
 -- Inserting data for examinations
 INSERT INTO `examinations` (`ExamID`, `ExamName`, `ExamDate`, `email`)

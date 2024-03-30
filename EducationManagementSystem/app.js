@@ -13,6 +13,8 @@ import ExamDetailsPage from './Screens/ExamDetailsPage';
 import OnlineAcademicAssistant from './Screens/OnlineAcademicAssistant';
 import OnlineAskQuestion from './Screens/OnlineAskQuestion';
 import OnlineAnswerQuestion from './Screens/OnlineAnswerQuestion';
+import ApproveStudent from './Screens/ApproveStudent';
+import ApproveTeacher from './Screens/ApproveTeacher';
 import { AuthProvider } from './AuthContext';
 
 const Stack = createStackNavigator();
@@ -33,6 +35,8 @@ const App = () => {
           <Stack.Screen name="OnlineAcademicAssistant" component={OnlineAcademicAssistant} />
           <Stack.Screen name="OnlineAskQuestion" component={OnlineAskQuestion} />
           <Stack.Screen name="OnlineAnswerQuestion" component={OnlineAnswerQuestion} />
+          <Stack.Screen name="ApproveStudent" component={ApproveStudent} />
+          <Stack.Screen name="ApproveTeacher" component={ApproveTeacher} />
           {/* Add screens for other actions if needed */}
         </Stack.Navigator>
       </NavigationContainer>

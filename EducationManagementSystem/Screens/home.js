@@ -17,17 +17,19 @@ const Home = () => {
     navigation.navigate('OnlineAcademicAssistant');
   };
 
-  const handleDeleteResult = () => {
-    navigation.navigate('DeleteResult');
+  const handleApproveStudent = () => {
+    navigation.navigate('ApproveStudent');
+  };
+
+  const handleApproveTeacher = () => {
+    navigation.navigate('ApproveTeacher');
   };
 
   const handleGenerateReport = () => {
     navigation.navigate('GenerateReport');
   };
 
-  const handleApproveStudent = () => {
-    navigation.navigate('ApproveStudent');
-  };
+
 
   return (
     <View style={styles.container}>
@@ -37,9 +39,10 @@ const Home = () => {
       <Button title="Add Exam Result" onPress={handleAddResult} />
       <Button title="StudentSearch" onPress={handleStudentSearch} />
       <Button title="Online Academic Assistant" onPress={handleOnlineAcademicAssistant} />
-      <Button title="Delete Exam Result" onPress={handleDeleteResult} />
-      <Button title="Generate Report" onPress={handleGenerateReport} />
       <Button title="Approve Student" onPress={handleApproveStudent} />
+      <Button title="Approve Teacher" onPress={handleApproveTeacher} />
+      <Button title="Generate Report" onPress={handleGenerateReport} />
+      
     </View>
   );
 };
