@@ -1,15 +1,42 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Card, Button } from 'react-native-paper'; 
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
   const navigation = useNavigation();
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDataString = await AsyncStorage.getItem('userData');
+        if (userDataString) {
+          const userData = JSON.parse(userDataString);
+          setUserData(userData);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  if (!userData) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   const handleAddResult = () => {
     navigation.navigate('AddResult');
   };
 
-  const handleStudentSearch = () => {
+  const handleSearchStudent = () => {
     navigation.navigate('SearchStudent');
   };
 
@@ -25,24 +52,62 @@ const Home = () => {
     navigation.navigate('ApproveTeacher');
   };
 
-  const handleGenerateReport = () => {
-    navigation.navigate('GenerateReport');
+  const handleViewResult = () => {
+    navigation.navigate('ViewResult');
   };
-
-
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to the Home Screen</Text>
 
-      {/* Buttons to navigate to different screens */}
-      <Button title="Add Exam Result" onPress={handleAddResult} />
-      <Button title="StudentSearch" onPress={handleStudentSearch} />
-      <Button title="Online Academic Assistant" onPress={handleOnlineAcademicAssistant} />
-      <Button title="Approve Student" onPress={handleApproveStudent} />
-      <Button title="Approve Teacher" onPress={handleApproveTeacher} />
-      <Button title="Generate Report" onPress={handleGenerateReport} />
-      
+      {(userData.admin === 1 || userData.teacher === 1) && (
+        <Card style={styles.card}>
+          <Card.Content>
+            <Button onPress={handleAddResult}>Add Exam Results</Button>
+          </Card.Content>
+        </Card>
+      )}
+
+      {userData.student === 1 && (
+        <Card style={styles.card}>
+          <Card.Content>
+            <Button onPress={handleViewResult}>View Exam Result</Button>
+          </Card.Content>
+        </Card>
+      )}
+
+      {(userData.admin === 1 || userData.teacher === 1)&& (
+        <Card style={styles.card}>
+          <Card.Content>
+            <Button onPress={handleSearchStudent}>Manage Exam Results</Button>
+          </Card.Content>
+        </Card>
+      )}
+
+      {(userData.student === 1 || userData.admin === 1 || userData.teacher === 1) && (
+        <Card style={styles.card}>
+          <Card.Content>
+            <Button onPress={handleOnlineAcademicAssistant}>Online Academic Assistant</Button>
+          </Card.Content>
+        </Card>
+      )}
+
+      {(userData.admin === 1 || userData.teacher === 1) && (
+        <Card style={styles.card}>
+          <Card.Content>
+            <Button onPress={handleApproveStudent}>Approve Student</Button>
+          </Card.Content>
+        </Card>
+      )}
+
+      {userData.admin === 1 && (
+        <Card style={styles.card}>
+          <Card.Content>
+            <Button onPress={handleApproveTeacher}>Approve Teacher</Button>
+          </Card.Content>
+        </Card>
+      )}
+
     </View>
   );
 };
@@ -53,10 +118,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  card: {
+    marginBottom: 10,
+    width: '80%', 
   },
 });
 

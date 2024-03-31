@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, Button, Alert, TextInput } from 'react-native';
 
-const ExamDetailsPage = ({ route, navigation }) => {
+const ExamDetails = ({ route, navigation }) => {
   const { examId, email } = route.params;
   const [examDetails, setExamDetails] = useState({});
   const [examResults, setExamResults] = useState([]);
@@ -13,7 +13,7 @@ const ExamDetailsPage = ({ route, navigation }) => {
   const fetchExamResults = async () => {
     try {
       const response = await fetch(
-        `http://192.168.136.1:3002/studentsExam/Result?email=${email}&examId=${examId}`
+        `http://192.168.136.1:3002/studentsExam/detailResult?email=${email}&examId=${examId}`
       );
 
       if (!response.ok) {
@@ -48,7 +48,7 @@ const ExamDetailsPage = ({ route, navigation }) => {
 
   const handleDeleteResult = async () => {
     try {
-      const response = await fetch(`http://192.168.136.1:3002/deleteExam?examId=${examId}`, {
+      const response = await fetch(`http://192.168.136.1:3002/studentsExam/deleteResult?examId=${examId}`, {
         method: 'DELETE',
       });
 
@@ -106,7 +106,7 @@ const ExamDetailsPage = ({ route, navigation }) => {
       });
   
       // Make API call to update the marks in the database
-      const response = await fetch('http://192.168.136.1:3002/studentsExam/UpdateResult', {
+      const response = await fetch('http://192.168.136.1:3002/studentsExam/updateResult', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -221,4 +221,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExamDetailsPage;
+export default ExamDetails;

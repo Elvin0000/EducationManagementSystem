@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `student` int DEFAULT 0,
     `teacher` int DEFAULT 0,
     `admin` int DEFAULT 0,
-    `selectedRole` varchar(10)
+    `selectedRole` varchar(10) DEFAULT NULL
 );
 
 -- Table for Examinations
@@ -81,13 +81,13 @@ INSERT INTO answers (answer_text, answered_by, question_id) VALUES
 
 -- Inserting data for users
 INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
-VALUES ('John Doe', 'abcdef', 'john@example.com', '1990-01-01', '0123456789', 0, 0, 0,'student');
+VALUES ('John Doe', 'abcdef', 'john@example.com', '1990-01-01', '0123456789', 1, 0, 0,'');
 
 INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
-VALUES ('Test1', 'test', 'test1@example.com', '1990-01-01', '0123456789', 0, 0, 0,'student');
+VALUES ('Test1', 'test', 'test1@example.com', '1990-01-01', '0123456789', 0, 1, 0,'');
 
 INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
-VALUES ('Test2', 'test', 'test2@example.com', '1990-01-01', '0123456789', 0, 0, 0,'teacher');
+VALUES ('Test2', 'test', 'test2@example.com', '1990-01-01', '0123456789', 0, 0, 1,'');
 
 -- Inserting data for examinations
 INSERT INTO `examinations` (`ExamID`, `ExamName`, `ExamDate`, `email`)

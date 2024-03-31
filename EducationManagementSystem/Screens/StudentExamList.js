@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const StudentExam = ({ route }) => {
+const StudentExamList = ({ route }) => {
   const { email } = route.params;
   const [examinations, setExaminations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -11,7 +11,7 @@ const StudentExam = ({ route }) => {
 
   const fetchExaminations = async () => {
     try {
-      const response = await fetch(`http://192.168.136.1:3002/studentsExam?email=${email}`);
+      const response = await fetch(`http://192.168.136.1:3002/studentsExamList?email=${email}`);
       const data = await response.json();
       setExaminations(data);
     } catch (error) {
@@ -32,7 +32,7 @@ const StudentExam = ({ route }) => {
 
   const navigateToExamDetails = (examId) => {
     // Use navigation object to navigate to the next page and pass email and examId as parameters
-    navigation.navigate('ExamDetailsPage', { examId, email });
+    navigation.navigate('ExamDetails', { examId, email });
   };
   
 
@@ -71,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StudentExam;
+export default StudentExamList;

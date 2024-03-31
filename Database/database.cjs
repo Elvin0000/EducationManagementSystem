@@ -1,13 +1,10 @@
 const express = require('express');
-// const cors = require('cors');
 
 const mysql = require('mysql2/promise');
 
 const app = express();
 const port = 3002;
 
-// // Use the CORS middleware
-// app.use(cors());
 app.use(express.json()); // Middleware to parse JSON request bodies
 
 // Create a MySQL connection pool
@@ -21,6 +18,24 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+// Check if email exists in the database
+const checkEmailExists = async (email) => {
+  const [rows, fields] = await pool.execute(
+    'SELECT COUNT(*) AS count FROM users WHERE email = ?',
+    [email]
+  );
+  return rows[0].count > 0;
+};
+
+// Add user to the database
+const addUser = async (email, password, selectedRole) => {
+  const [result, fields] = await pool.execute(
+    'INSERT INTO users (email, password, selectedRole) VALUES (?, ?, ?)',
+    [email, password, selectedRole]
+  );
+  return result.insertId; // Return the ID of the newly inserted user
+};
+
 // Use the pool to execute queries
 app.get('/users', async (req, res) => {
   try {
@@ -31,7 +46,6 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
 
 app.post('/login', async (req, res) => {
   try {
@@ -94,26 +108,6 @@ app.get('/userDetails', async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
-
-
-
-// Check if email exists in the database
-const checkEmailExists = async (email) => {
-  const [rows, fields] = await pool.execute(
-    'SELECT COUNT(*) AS count FROM users WHERE email = ?',
-    [email]
-  );
-  return rows[0].count > 0;
-};
-
-// Add user to the database
-const addUser = async (email, password, selectedRole) => {
-  const [result, fields] = await pool.execute(
-    'INSERT INTO users (email, password, selectedRole) VALUES (?, ?, ?)',
-    [email, password, selectedRole]
-  );
-  return result.insertId; // Return the ID of the newly inserted user
-};
 
 // API endpoint to handle user signup
 app.post('/signup', async (req, res) => {
@@ -194,7 +188,7 @@ app.get('/viewProfile', async (req, res) => {
   }
 });
 
-app.post('/saveProfile', async (req, res) => {
+app.post('/updateProfile', async (req, res) => {
   try {
     const { email, username, dob, phone_no } = req.body;
 
@@ -252,6 +246,7 @@ app.post('/saveProfile', async (req, res) => {
 
 app.delete('/deleteProfile', async (req, res) => {
   try {
+
     const { email } = req.query;
     const query = `
       SELECT      
@@ -294,16 +289,6 @@ app.delete('/deleteProfile', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
 app.post('/addResult', async (req, res) => {
   try {
     const { email, examName, examDate, examID, tableData } = req.body;
@@ -340,9 +325,30 @@ app.post('/addResult', async (req, res) => {
   }
 });
 
+app.get('/studentsEmailList', async (req, res) => {
+  try {
+    const searchTerm = req.query.searchTerm || '';
+    const query = `
+    SELECT DISTINCT e.email
+    FROM examinations e
+    `;
+
+    console.log('Executing query:', query);
+
+    const [rows, fields] = await pool.execute(query, [`%${searchTerm}%`, `%${searchTerm}%`]);
+
+    console.log('Fetched student emails:', rows);
+
+    const studentEmails = rows.map((row) => row.email);
+    res.status(200).json(studentEmails);    
+  } catch (error) {
+    console.error('Error fetching student emails:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
 // Endpoint to retrieve exam names for a specific student
-app.get('/studentsExam', async (req, res) => {
+app.get('/studentsExamList', async (req, res) => {
   try {
     const { email } = req.query;
     const [rows, fields] = await pool.execute(
@@ -363,62 +369,7 @@ app.get('/studentsExam', async (req, res) => {
   }
 });
 
-// Endpoint to delete an exam and associated subjects and marks
-app.delete('/deleteExam', async (req, res) => {
-  try {
-    const { examId } = req.query;
-
-    // Validate examId
-    if (!examId) {
-      return res.status(400).json({ message: 'Missing examId parameter in the request' });
-    }
-
-    // Delete marks associated with the exam
-    await pool.execute('DELETE FROM marks WHERE ExamID = ?', [examId]);
-
-    // Delete subjects associated with the exam
-    await pool.execute('DELETE FROM subjects WHERE ExamID = ?', [examId]);
-
-    // Delete the exam
-    await pool.execute('DELETE FROM examinations WHERE ExamID = ?', [examId]);
-
-    res.status(200).json({ message: 'Exam, associated subjects, and marks deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting exam, subjects, and marks:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
-
-
-
-
-
-
-app.get('/studentsEmail', async (req, res) => {
-  try {
-    const searchTerm = req.query.searchTerm || '';
-    const query = `
-      SELECT DISTINCT u.email
-      FROM users u
-      LEFT JOIN examinations e ON u.email = e.email
-      WHERE u.student = 1 AND (u.email LIKE ? OR e.ExamName LIKE ?)
-    `;
-
-    console.log('Executing query:', query);
-
-    const [rows, fields] = await pool.execute(query, [`%${searchTerm}%`, `%${searchTerm}%`]);
-
-    console.log('Fetched student emails:', rows);
-
-    const studentEmails = rows.map((row) => row.email);
-    res.status(200).json(studentEmails);
-  } catch (error) {
-    console.error('Error fetching student emails:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
-
-app.get('/studentsExam/Result', async (req, res) => {
+app.get('/studentsExam/detailResult', async (req, res) => {
   try {
     const { email, examId } = req.query;
 
@@ -467,7 +418,33 @@ app.get('/studentsExam/Result', async (req, res) => {
   }
 });
 
-app.post('/studentsExam/UpdateResult', async (req, res) => {
+// Endpoint to delete an exam and associated subjects and marks
+app.delete('/studentsExam/deleteResult', async (req, res) => {
+  try {
+    const { examId } = req.query;
+
+    // Validate examId
+    if (!examId) {
+      return res.status(400).json({ message: 'Missing examId parameter in the request' });
+    }
+
+    // Delete marks associated with the exam
+    await pool.execute('DELETE FROM marks WHERE ExamID = ?', [examId]);
+
+    // Delete subjects associated with the exam
+    await pool.execute('DELETE FROM subjects WHERE ExamID = ?', [examId]);
+
+    // Delete the exam
+    await pool.execute('DELETE FROM examinations WHERE ExamID = ?', [examId]);
+
+    res.status(200).json({ message: 'Exam, associated subjects, and marks deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting exam, subjects, and marks:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+app.post('/studentsExam/updateResult', async (req, res) => {
   try {
     // Ensure that the required parameters are provided
     const { email, examId, updatedResults } = req.body;
@@ -507,6 +484,17 @@ app.post('/studentsExam/UpdateResult', async (req, res) => {
   }
 });
 
+// Endpoint to get all questions
+app.get('/questions', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM questions');
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
 // Endpoint to post a new question
 app.post('/questions', async (req, res) => {
   const { question_text, asked_by } = req.body;
@@ -515,17 +503,6 @@ app.post('/questions', async (req, res) => {
     res.status(201).json({ success: true, message: 'Question asked successfully', question_id: result.insertId });
   } catch (error) {
     console.error('Error asking question:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
-  }
-});
-
-// Endpoint to get all questions
-app.get('/questions', async (req, res) => {
-  try {
-    const [rows] = await pool.query('SELECT * FROM questions');
-    res.json(rows);
-  } catch (error) {
-    console.error('Error fetching questions:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
@@ -573,7 +550,6 @@ app.post('/questions/:question_id/answers', async (req, res) => {
   }
 });
 
-
 // Endpoint to get all student emails
 app.get('/approveStudents', async (req, res) => {
   try {
@@ -612,8 +588,6 @@ app.put('/users/:email/approveStudent', async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
-
-
 
 // API endpoint to reject a student
 app.put('/users/:email/rejectStudent', async (req, res) => {
@@ -672,8 +646,6 @@ app.put('/users/:email/approveTeacher', async (req, res) => {
   }
 });
 
-
-
 // API endpoint to reject a teacher
 app.put('/users/:email/rejectTeacher', async (req, res) => {
   const email = req.params.email;
@@ -691,9 +663,6 @@ app.put('/users/:email/rejectTeacher', async (req, res) => {
     return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
-
-
-
 
 // Define a basic route
 app.get('/', (req, res) => {

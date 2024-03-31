@@ -11,7 +11,7 @@ const SearchStudent = ({ navigation }) => {
 
   const fetchStudentEmails = async () => {
     try {
-      const response = await fetch('http://192.168.136.1:3002/studentsEmail');
+      const response = await fetch('http://192.168.136.1:3002/studentsEmailList');
       const data = await response.json();
       setStudentEmails(data);
       setFilteredEmails(data);
@@ -31,7 +31,7 @@ const SearchStudent = ({ navigation }) => {
   };
 
   const navigateToStudentExam = (email) => {
-    navigation.navigate('StudentExam', { email });
+    navigation.navigate('StudentExamList', { email });
   };
   
 

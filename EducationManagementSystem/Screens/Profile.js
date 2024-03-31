@@ -63,7 +63,7 @@ const ProfilePage = () => {
         email: email,
       };
   
-      const response = await axios.post(`http://192.168.136.1:3002/saveProfile?email=${email}`, updatedProfile);
+      const response = await axios.post(`http://192.168.136.1:3002/updateProfile?email=${email}`, updatedProfile);
   
       console.log('Profile saved successfully:', response.data);
     } catch (error) {
@@ -75,40 +75,36 @@ const ProfilePage = () => {
   
   const handleDelete = async () => {
     try {
-      // Retrieve the email from AsyncStorage
-      const storedEmail = await AsyncStorage.getItem('userEmail');
-  
-      // Ensure that storedEmail is defined before making the request
-      if (storedEmail) {
-        console.log('Deleting profile with email:', storedEmail);
-  
+      // Retrieve the user data from AsyncStorage
+      const storedDataString = await AsyncStorage.getItem('userData');
+      
+      // Parse the stored data and extract the email
+      if (storedDataString) {
+        const storedData = JSON.parse(storedDataString);
+        const userEmail = storedData.email;
+    
+        console.log('Deleting profile with email:', userEmail);
+    
         // Make the delete request with the retrieved email
-        const response = await axios.delete(`http://192.168.136.1:3002/deleteProfile?email=${storedEmail}`);
-  
-        // ... rest of the code ...
+        const response = await axios.delete(`http://192.168.136.1:3002/deleteProfile?email=${userEmail}`);
+    
+        // Handle the response if needed
+        // For example, you can check response status and display a success message
+    
       } else {
-        console.error('Email is undefined.');
+        console.error('User data is undefined.');
       }
     } catch (error) {
       // Handle the error (e.g., show an error message to the user)
       console.error('Error deleting user profile:', error);
-  
-      // Handle 404 specifically, if needed
-      if (error.response && error.response.status === 404) {
-        // Handle 404 error
-        console.log('User not found.');
-      }
+    
+      // Handle specific errors if needed
+      // For example, you can check if the error is a 404 and handle it differently
+    
     } finally {
       navigation.navigate('Login');
     }
   };
-  
-  
-  
-  
-  
-  
-  
 
   const handleProfilePicChange = () => {
     // Implement logic to change profile picture
@@ -236,7 +232,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
 
-  
 });
 
 export default ProfilePage;
