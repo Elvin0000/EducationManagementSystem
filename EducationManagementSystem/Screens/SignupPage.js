@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const SignupPage = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,9 +12,20 @@ const SignupPage = ({ navigation }) => {
     setSelectedRole(selectedRole);
   };
 
+  const isEmailValid = (email) => {
+    // Regular expression to validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSignup = async () => {
     if (!email || !password || !confirmPassword) {
       Alert.alert('Error', 'Both email, password, and confirm password cannot be empty.');
+      return;
+    }
+
+    if (!isEmailValid(email)) {
+      Alert.alert('Error', 'Please enter a valid email address.');
       return;
     }
   
@@ -64,8 +74,6 @@ const SignupPage = ({ navigation }) => {
       Alert.alert('Error', 'An unexpected error occurred. Please try again later.');
     }
   };
-  
-  
 
   return (
     <View style={styles.container}>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { useNavigation } from '@react-navigation/native';
+import NavigateToHomeButton from '../NavigateToHomeButton';
+import CustomHeader from '../CustomHeader';
 
 const AddResult = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -119,6 +121,8 @@ const AddResult = ({ navigation }) => {
 
   return (
     <View>
+      <CustomHeader />
+
       <Text>Email:</Text>
       <TextInput value={email} onChangeText={(text) => setEmail(text)} placeholder="Enter Email" />
 
@@ -166,6 +170,7 @@ const AddResult = ({ navigation }) => {
       <Button title="Add Row" onPress={addRowHandler} />
 
       <Button title="Add Result" onPress={handleAddResult} />
+
     </View>
   );
 };

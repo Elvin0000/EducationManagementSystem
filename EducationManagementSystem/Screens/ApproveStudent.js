@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import NavigateToHomeButton from '../NavigateToHomeButton';
 
 const ApproveStudent = () => {
   const [studentEmails, setStudentEmails] = useState([]);
@@ -82,6 +83,7 @@ const ApproveStudent = () => {
         keyExtractor={(item) => item}
         key={key} // Unique key for FlatList
       />
+      <NavigateToHomeButton />
     </View>
   );
 };
