@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import NavigateToHomeButton from '../Components/NavigateToHomeButton';
+import CustomHeader from '../Components/CustomHeader';
 
 const ApproveStudent = () => {
   const [studentEmails, setStudentEmails] = useState([]);
@@ -75,16 +76,21 @@ const ApproveStudent = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>List of Student Emails:</Text>
-      <FlatList
-        data={studentEmails}
-        renderItem={renderItem}
-        keyExtractor={(item) => item}
-        key={key} // Unique key for FlatList
-      />
-      <NavigateToHomeButton />
-    </View>
+    <>
+      <CustomHeader title="Approve Students" />
+      <View style={styles.container}>
+        <Text style={styles.heading}>Student Approval Request:</Text>
+        <FlatList
+          data={studentEmails}
+          renderItem={renderItem}
+          keyExtractor={(item) => item}
+          key={key} // Unique key for FlatList
+        />
+        <View style={styles.buttonWrapper}>
+          <NavigateToHomeButton />
+        </View>
+      </View>
+    </>
   );
 };
 
@@ -94,8 +100,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   heading: {
-    fontSize: 24,
+    fontSize: 20,
     marginBottom: 20,
+    fontWeight:"bold",
+    color:"#4494ad",
   },
   itemContainer: {
     flexDirection: 'row',
@@ -133,6 +141,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+  buttonWrapper: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+  },
+  
 });
 
 export default ApproveStudent;

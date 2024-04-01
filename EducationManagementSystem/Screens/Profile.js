@@ -175,6 +175,8 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
     marginBottom: 20,
+    fontWeight:"bold",
+    color:"#4494ad"
   },
   profilePic: {
     width: 100,
@@ -200,7 +202,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#4494ad',
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
@@ -214,6 +216,7 @@ const styles = StyleSheet.create({
   profileText: {
     textAlign: 'left',
     marginBottom: 5,
+    fontWeight:"bold",
   },
   profileInfo1: {
     width: '100%',

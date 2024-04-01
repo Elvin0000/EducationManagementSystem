@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomHeader from '../Components/CustomHeader';
 
 const OnlineAnswerQuestion = ({ route }) => {
   const { questionId } = route.params;
@@ -37,8 +38,8 @@ const OnlineAnswerQuestion = ({ route }) => {
     }
   };
 
-// Function to handle posting a new answer
-const handleReply = async () => {
+  // Function to handle posting a new answer
+  const handleReply = async () => {
     try {
       // Check if newAnswer is not empty
       if (newAnswer.trim() === '') {
@@ -88,43 +89,51 @@ const handleReply = async () => {
     <View style={styles.answerContainer}>
       <Text style={styles.bold}>{index + 1}. {item.answer_text}</Text>
       <View style={{ height: 10 }}></View>
-      <Text> By: {item.answered_by}     {formatDate(item.answered_at)}</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text>{item.answered_by}</Text>
+        <Text style={{ textAlign: 'right' }}>{formatDate(item.answered_at)}</Text>
+      </View>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Questions</Text>
-      {question && (
-        <View>
+      <CustomHeader title="Online Answer Question" />
+      <View style={styles.content}>
+        <Text style={styles.heading}>Question</Text>
+        {question && (
           <View style={styles.questionContainer}>
-            <Text>{question.question_text}</Text>
-            <Text> By: {question.asked_by}     {formatDate(question.asked_at)}</Text>
+            <Text style={styles.bold}>{question.question_text}</Text>
+            <View style={{ height: 10 }}></View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text>{question.asked_by}</Text>
+              <Text style={{ textAlign: 'right' }}>{formatDate(question.asked_at)}</Text>
+            </View>
           </View>
-        </View>
-      )}
-      <Text style={styles.heading}>Answers</Text>
-      <FlatList
-        data={answers}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
-        inverted
+        )}
+        <Text style={styles.heading}>Answers</Text>
+        <FlatList
+          data={answers}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => item.answer_id.toString()}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
+          inverted
         />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.replyContainer}
-      >
-        <TextInput
-          style={styles.input}
-          placeholder="Your answer..."
-          value={newAnswer}
-          onChangeText={setNewAnswer}
-        />
-        <TouchableOpacity style={styles.replyButton} onPress={handleReply}>
-          <Text style={styles.replyButtonText}>Reply</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          behavior="padding"
+          style={styles.replyContainer}
+        >
+          <TextInput
+            style={styles.input}
+            placeholder="Your answer..."
+            value={newAnswer}
+            onChangeText={setNewAnswer}
+          />
+          <TouchableOpacity style={styles.replyButton} onPress={handleReply}>
+            <Text style={styles.replyButtonText}>Reply</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </View>
     </View>
   );
 };
@@ -132,25 +141,49 @@ const handleReply = async () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  content: {
+    flex: 1,
     padding: 20,
   },
   heading: {
     fontSize: 24,
     marginBottom: 20,
+    color: "#4494ad",
+    fontWeight: 'bold',
   },
   questionContainer: {
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
+    backgroundColor: '#fff',
     borderRadius: 5,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 20,
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
   },
   answerContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 20,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
+    marginLeft: 10,
+    marginRight: 10,
   },
   replyContainer: {
     flexDirection: 'row',
@@ -169,7 +202,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   replyButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#4494ad',
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
@@ -183,6 +216,7 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: 'bold',
     color: 'black',
+    fontSize: 18,
   },
 });
 

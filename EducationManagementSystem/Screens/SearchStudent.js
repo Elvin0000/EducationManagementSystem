@@ -1,6 +1,7 @@
 // SearchStudent.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TextInput, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
+import CustomHeader from '../Components/CustomHeader';
 
 const SearchStudent = ({ navigation }) => {
   const [studentEmails, setStudentEmails] = useState([]);
@@ -49,6 +50,7 @@ const SearchStudent = ({ navigation }) => {
 
   return (
     <View>
+      <CustomHeader />
       <TextInput
         style={styles.searchBar}
         placeholder="Search by email"

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import CustomHeader from '../Components/CustomHeader'; 
 
 const OnlineAcademicAssistant = () => {
   const [questions, setQuestions] = useState([]);
@@ -51,18 +52,21 @@ const OnlineAcademicAssistant = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Online Academic Session</Text>
+      <CustomHeader title="Online Academic Session" /> 
       <TextInput
         style={styles.searchInput}
         placeholder="Search questions"
         value={searchTerm}
         onChangeText={text => setSearchTerm(text)}
       />
-      <FlatList
-        data={filterQuestions()}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.question_id.toString()}
-      />
+      <View style={styles.flatListContainer}>
+        <FlatList
+          data={filterQuestions()}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.question_id.toString()}
+          style={styles.flatList}
+        />
+      </View>
       <TouchableOpacity style={styles.askButton} onPress={navigateToAskQuestion}>
         <Text style={styles.askButtonText}>Ask a Question</Text>
       </TouchableOpacity>
@@ -73,39 +77,58 @@ const OnlineAcademicAssistant = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-  },
-  heading: {
-    fontSize: 24,
-    marginBottom: 20,
+    backgroundColor: '#fff',
   },
   questionContainer: {
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderRadius: 45,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20,
+    marginRight: 20,
   },
   askButton: {
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: 'blue',
+    backgroundColor: '#4494ad',
     padding: 10,
     borderRadius: 5,
+    elevation: 5,
     alignItems: 'center',
   },
+
   askButtonText: {
     color: 'white',
     fontSize: 16,
   },
   searchInput: {
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 20,
+    marginLeft: 20,
+    marginRight: 20,
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
     borderRadius: 5,
   },
+  flatListContainer: {
+    flex: 1,
+    height: 100,
+  },
+  flatList: {
+    flex: 1,
+  },
 });
+
 
 export default OnlineAcademicAssistant;

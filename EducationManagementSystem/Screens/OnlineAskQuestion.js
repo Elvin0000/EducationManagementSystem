@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomHeader from '../Components/CustomHeader';
 
 const OnlineAskQuestion = ({ navigation }) => {
   const [questionText, setQuestionText] = useState('');
@@ -47,21 +48,23 @@ const OnlineAskQuestion = ({ navigation }) => {
       console.error('Error posting question:', error);
     }
   };
-  
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Ask Question</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Type your question here"
-        value={questionText}
-        onChangeText={setQuestionText}
-        multiline={true}
-      />
-      <TouchableOpacity style={styles.button} onPress={handlePostQuestion}>
-        <Text style={styles.buttonText}>Post Question</Text>
-      </TouchableOpacity>
+      <CustomHeader title="Ask Question" />
+      <View style={styles.content}>
+        <Text style={styles.heading}>Ask Question</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Type your question here"
+          value={questionText}
+          onChangeText={setQuestionText}
+          multiline={true}
+        />
+        <TouchableOpacity style={styles.button} onPress={handlePostQuestion}>
+          <Text style={styles.buttonText}>Post Question</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -69,11 +72,17 @@ const OnlineAskQuestion = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  content: {
+    flex: 1,
     padding: 20,
   },
   heading: {
     fontSize: 24,
     marginBottom: 20,
+    fontWeight: 'bold',
+    color: '#4494ad',
   },
   input: {
     height: 200,
@@ -84,7 +93,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#4494ad',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',

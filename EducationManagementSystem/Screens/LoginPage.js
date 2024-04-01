@@ -185,7 +185,7 @@ input: {
 },
 button: {
   width: '100%',
-  backgroundColor: 'blue',
+  backgroundColor: '#4494ad',
   padding: 10,
   alignItems: 'center',
   borderRadius: 5,

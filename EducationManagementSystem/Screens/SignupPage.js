@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RadioButton } from 'react-native-paper';
+
 
 const SignupPage = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -99,18 +101,22 @@ const SignupPage = ({ navigation }) => {
         secureTextEntry
       />
       <Text>Select your account:</Text>
-      <TouchableOpacity
-        style={[styles.roleButton, selectedRole === 'student' && { backgroundColor: 'lightblue' }]}
-        onPress={() => handleRoleChange('student')}
-      >
+      <View style={styles.roleButtonContainer}>
+        <RadioButton
+          value="student"
+          status={selectedRole === 'student' ? 'checked' : 'unchecked'}
+          onPress={() => handleRoleChange('student')}
+        />
         <Text>Student</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.roleButton, selectedRole === 'teacher' && { backgroundColor: 'lightblue' }]}
-        onPress={() => handleRoleChange('teacher')}
-      >
+      </View>
+      <View style={styles.roleButtonContainer}>
+        <RadioButton
+          value="teacher"
+          status={selectedRole === 'teacher' ? 'checked' : 'unchecked'}
+          onPress={() => handleRoleChange('teacher')}
+        />
         <Text>Teacher</Text>
-      </TouchableOpacity>
+      </View>
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <Text style={styles.buttonText}>Signup</Text>
       </TouchableOpacity>
@@ -137,12 +143,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 10,
   },
-  roleButton: {
-    marginBottom: 10,
+  roleButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   button: {
     width: '100%',
-    backgroundColor: 'blue',
+    backgroundColor: '#4494ad',
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,

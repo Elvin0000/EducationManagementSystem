@@ -325,49 +325,61 @@ app.post('/addResult', async (req, res) => {
   }
 });
 
+// Endpoint to retrieve student emails with optional search term
 app.get('/studentsEmailList', async (req, res) => {
   try {
     const searchTerm = req.query.searchTerm || '';
     const query = `
-    SELECT DISTINCT e.email
-    FROM examinations e
-    `;
+      SELECT DISTINCT e.email
+      FROM examinations e
+      WHERE e.email LIKE ?`;
 
     console.log('Executing query:', query);
 
-    const [rows, fields] = await pool.execute(query, [`%${searchTerm}%`, `%${searchTerm}%`]);
+    const [rows, fields] = await pool.execute(query, [`%${searchTerm}%`]);
 
     console.log('Fetched student emails:', rows);
 
     const studentEmails = rows.map((row) => row.email);
-    res.status(200).json(studentEmails);    
+    res.status(200).json(studentEmails);
   } catch (error) {
     console.error('Error fetching student emails:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
-// Endpoint to retrieve exam names for a specific student
+// Endpoint to retrieve exam names for a specific student with optional search term
 app.get('/studentsExamList', async (req, res) => {
   try {
-    const { email } = req.query;
-    const [rows, fields] = await pool.execute(
-      'SELECT ExamID, ExamName, ExamDate FROM examinations WHERE email = ?',
-      [email]
-    );
+    const { email, searchTerm } = req.query;
+    let query = 'SELECT ExamID, ExamName, ExamDate FROM examinations WHERE email = ?';
+    const params = [email];
 
-    const examsData = rows.map((row) => ({
-      ExamID: row.ExamID,
-      ExamName: row.ExamName,
-      ExamDate: row.ExamDate,
-    }));
-    
-    res.status(200).json(examsData);
+    if (searchTerm) {
+      query += ' AND ExamName LIKE ?';
+      params.push(`%${searchTerm}%`);
+    }
+
+    const [rows, fields] = await pool.execute(query, params);
+
+    if (rows && rows.length > 0) {
+      const examsData = rows.map((row) => ({
+        ExamID: row.ExamID,
+        ExamName: row.ExamName,
+        ExamDate: row.ExamDate,
+      }));
+
+      res.status(200).json(examsData);
+    } else {
+      res.status(404).json({ message: 'No exams found for the specified student' });
+    }
   } catch (error) {
     console.error('Error fetching exams data:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
 
 app.get('/studentsExam/detailResult', async (req, res) => {
   try {

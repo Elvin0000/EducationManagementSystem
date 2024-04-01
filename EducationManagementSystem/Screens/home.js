@@ -58,7 +58,7 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to the Home Screen</Text>
+      <Text style={styles.title}>Welcome to Education Management System</Text>
 
       {(userData.admin === 1 || userData.teacher === 1) && (
         <Card style={styles.card}>
@@ -127,9 +127,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
+    color:"#4494ad",
+    textAlign: 'center',
   },
   card: {
-    marginBottom: 10,
+    marginBottom: 15,
     width: '80%', 
   },
 });

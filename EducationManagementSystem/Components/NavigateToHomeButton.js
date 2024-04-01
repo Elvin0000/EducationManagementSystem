@@ -18,11 +18,12 @@ const NavigateToHomeButton = () => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#4494ad',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
     alignItems: 'center',
+    width:100,
   },
   buttonText: {
     color: 'white',

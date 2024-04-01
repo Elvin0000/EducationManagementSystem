@@ -31,12 +31,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   title: {
-    color: 'blue',
+    fontFamily: 'Marker Felt', 
+    color: '#4494ad',
     fontSize: 18,
     fontWeight: 'bold',
   },
   homeButton: {
-    color: 'blue',
+    fontFamily: 'Marker Felt', // Add your custom font here
+    color: '#4494ad',
     fontSize: 16,
   },
 });

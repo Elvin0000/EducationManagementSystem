@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ScrollView } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { useNavigation } from '@react-navigation/native';
-import NavigateToHomeButton from '../Components/NavigateToHomeButton';
 import CustomHeader from '../Components/CustomHeader';
 
 const AddResult = ({ navigation }) => {
@@ -120,59 +119,164 @@ const AddResult = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <CustomHeader />
+      <ScrollView>
 
-      <Text>Email:</Text>
-      <TextInput value={email} onChangeText={(text) => setEmail(text)} placeholder="Enter Email" />
-
-      <Text>Exam ID:</Text>
-      <TextInput value={examID} onChangeText={(text) => setExamID(text)} placeholder="Enter Exam ID" />
-
-      <Text>Exam Name:</Text>
-      <TextInput value={examName} onChangeText={(text) => setExamName(text)} placeholder="Enter Exam Name" />
-
-      <Text>Exam Date:</Text>
-      <TextInput value={examDate} onChangeText={(text) => setExamDate(text)} placeholder="Enter Exam Date" />
-
-      <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-        <Row data={tableData[0]} style={{ height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }} />
-        {tableData.slice(1).map((rowData, rowIndex) => (
-          <Row
-            key={rowIndex}
-            data={rowData.map((cellData, columnIndex) => {
-              if (columnIndex === 0) {
-                return (
-                  <TextInput
-                    key={columnIndex}
-                    value={cellData}
-                    onChangeText={(text) => updateTableData(rowIndex + 1, columnIndex, text)}
-                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                  />
-                );
-              } else {
-                return (
-                  <TextInput
-                    key={columnIndex}
-                    value={cellData}
-                    onChangeText={(text) => updateTableData(rowIndex + 1, columnIndex, text)}
-                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                    editable={columnIndex !== 0}
-                  />
-                );
-              }
-            })}
-            textStyle={{ margin: 6 }}
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email:</Text>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
           />
-        ))}
-      </Table>
+        </View>
 
-      <Button title="Add Row" onPress={addRowHandler} />
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Exam ID:</Text>
+          <TextInput
+            style={styles.input}
+            value={examID}
+            onChangeText={(text) => setExamID(text)}
+          />
+        </View>
 
-      <Button title="Add Result" onPress={handleAddResult} />
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Exam Name:</Text>
+          <TextInput
+            style={styles.input}
+            value={examName}
+            onChangeText={(text) => setExamName(text)}
+            placeholder="Exp: Midterm2024"
+          />
+        </View>
 
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Exam Date:</Text>
+          <TextInput
+            style={styles.input}
+            value={examDate}
+            onChangeText={(text) => setExamDate(text)}
+            placeholder="YYYY-MM-DD"
+          />
+        </View>
+
+        <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
+          <Row data={tableData[0]} style={{ height: 55, backgroundColor: '#f1f8ff' }} textStyle={styles.tableHeaderCellText} />
+          {tableData.slice(1).map((rowData, rowIndex) => (
+            <Row
+              key={rowIndex}
+              data={rowData.map((cellData, columnIndex) => {
+                if (columnIndex === 0) {
+                  return (
+                    <TextInput
+                      key={columnIndex}
+                      value={cellData}
+                      onChangeText={(text) => updateTableData(rowIndex + 1, columnIndex, text)}
+                      style={styles.tableInput}
+                    />
+                  );
+                } else {
+                  return (
+                    <TextInput
+                      key={columnIndex}
+                      value={cellData}
+                      onChangeText={(text) => updateTableData(rowIndex + 1, columnIndex, text)}
+                      style={styles.tableInput}
+                      editable={columnIndex !== 0}
+                    />
+                  );
+                }
+              })}
+              textStyle={styles.tableRowText}
+            />
+          ))}
+        </Table>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={addRowHandler}
+          >
+            <Text style={styles.buttonText}>Add New Row</Text>
+          </TouchableOpacity>
+          <View style={{ marginLeft: 5 }} />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleAddResult}
+          >
+            <Text style={styles.buttonText}>Upload Result</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  label: {
+    width: 100,
+    marginLeft: 20,
+    textAlign: 'left',
+  },
+  input: {
+    marginTop: 10,
+    flex: 1,
+    width: 150,
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 15,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20, // Adjust the horizontal margin as needed
+    marginTop: 20, // Add top margin if needed
+    marginBottom: 50,
+  },
+  button: {
+    backgroundColor: '#4494ad',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    elevation: 5,
+    marginRight:10,
+    marginLeft:10,
+    marginBottom:100,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  scrollView: {
+    flex: 1,
+    marginBottom: 50, // Adjust as needed
+  },
+  container: {
+    flex: 1,
+  },
+  tableHeaderCellText: {
+    margin: 5,
+  },
+  tableInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: -1, // Adjust as needed
+    textAlign: 'center',
+  },
+  tableRowText: {
+    margin: 6,
+  },
+});
 
 export default AddResult;

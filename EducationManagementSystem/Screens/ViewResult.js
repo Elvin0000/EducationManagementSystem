@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomHeader from '../Components/CustomHeader';
 
 const ViewResult = () => {
   const [email, setEmail] = useState('');
@@ -52,7 +53,8 @@ const ViewResult = () => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
+      <CustomHeader />
       {isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (
@@ -75,6 +77,9 @@ const ViewResult = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   examItem: {
     fontSize: 18,
     padding: 10,
