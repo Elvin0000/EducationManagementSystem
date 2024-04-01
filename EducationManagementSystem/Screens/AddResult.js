@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 import { useNavigation } from '@react-navigation/native';
-import NavigateToHomeButton from '../NavigateToHomeButton';
-import CustomHeader from '../CustomHeader';
+import NavigateToHomeButton from '../Components/NavigateToHomeButton';
+import CustomHeader from '../Components/CustomHeader';
 
 const AddResult = ({ navigation }) => {
   const [email, setEmail] = useState('');

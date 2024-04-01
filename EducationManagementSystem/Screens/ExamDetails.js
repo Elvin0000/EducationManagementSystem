@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, Button, Alert, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ExamDetails = ({ route, navigation }) => {
   const { examId, email } = route.params;
@@ -9,6 +10,7 @@ const ExamDetails = ({ route, navigation }) => {
   const [error, setError] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedMarks, setEditedMarks] = useState({});
+  const [userData, setUserData] = useState(null);
 
   const fetchExamResults = async () => {
     try {
@@ -41,6 +43,22 @@ const ExamDetails = ({ route, navigation }) => {
 
     fetchData();
   }, [examId, email]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDataString = await AsyncStorage.getItem('userData');
+        if (userDataString) {
+          const userData = JSON.parse(userDataString);
+          setUserData(userData);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleEditResult = () => {
     setIsEditMode(!isEditMode);
@@ -156,14 +174,14 @@ const ExamDetails = ({ route, navigation }) => {
           <Text>Student Email: {email}</Text>
           <Text>Exam Name: {examDetails.ExamName}</Text>
           <Text>Exam Date: {formatExamDate(examDetails.ExamDate)}</Text>
-
+  
           <View style={{ borderStyle: 'solid', borderWidth: 1, borderColor: 'gray', marginBottom: 10 }}>
             <View style={{ flexDirection: 'row', marginVertical: 5 }}>
               <Text style={{ flex: 1, padding: 5, fontWeight: 'bold' }}>Subject ID</Text>
               <Text style={{ flex: 1, padding: 5, fontWeight: 'bold' }}>Subject Name</Text>
               <Text style={{ flex: 1, padding: 5, fontWeight: 'bold' }}>Mark</Text>
             </View>
-
+  
             <FlatList
               data={examResults}
               renderItem={({ item, index }) => (
@@ -194,18 +212,22 @@ const ExamDetails = ({ route, navigation }) => {
               keyExtractor={(item, index) => index.toString()}
             />
           </View>
-
+  
           <Text>Average Marks: {averageMarks.toFixed(2)}</Text>
-
+  
           <View style={styles.buttonContainer}>
-          <Button title={isEditMode ? 'Save Changes' : 'Edit Result'} onPress={isEditMode ? handleSaveChanges : handleEditResult} />
-
-            <Button title="Delete Result" onPress={handleDeleteResult} />
+            {!userData || (userData.student !== 1 && (
+              <Button title={isEditMode ? 'Save Changes' : 'Edit Result'} onPress={isEditMode ? handleSaveChanges : handleEditResult} />
+            ))}
+            {!userData || (userData.student !== 1 && (
+              <Button title="Delete Result" onPress={handleDeleteResult} />
+            ))}
           </View>
         </>
       )}
     </View>
   );
+  
 };
 
 const styles = StyleSheet.create({

@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OnlineAskQuestion = ({ navigation }) => {
   const [questionText, setQuestionText] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+    // Fetch user email from AsyncStorage
+    const fetchUserEmail = async () => {
+      try {
+        const email = await AsyncStorage.getItem('user_email');
+        setUserEmail(email);
+      } catch (error) {
+        console.error('Error retrieving user email from AsyncStorage:', error);
+      }
+    };
+
+    fetchUserEmail();
+  }, []);
 
   const handlePostQuestion = async () => {
     try {
@@ -11,12 +27,21 @@ const OnlineAskQuestion = ({ navigation }) => {
         console.error('Error posting question: Question cannot be empty');
         return;
       }
-      // Replace 'user@example.com' with the actual user's email retrieved from AsyncStorage
-      const userEmail = 'user@example.com'; // Replace with actual user email
+  
+      // Fetch user data from AsyncStorage
+      const userDataString = await AsyncStorage.getItem('userData');
+      if (!userDataString) {
+        console.error('User data not found in AsyncStorage.');
+        return;
+      }
+  
+      // Parse user data JSON
+      const userData = JSON.parse(userDataString);
+      const userEmail = userData.email;
+  
+      // Post the question using the retrieved user email
       await axios.post('http://192.168.136.1:3002/questions', { question_text: questionText, asked_by: userEmail });
-      // Clear the text input field
       setQuestionText('');
-      // Navigate back to the previous screen (Online Academic Assistance)
       navigation.goBack();
     } catch (error) {
       console.error('Error posting question:', error);

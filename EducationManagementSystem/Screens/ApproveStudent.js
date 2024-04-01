@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import NavigateToHomeButton from '../NavigateToHomeButton';
+import NavigateToHomeButton from '../Components/NavigateToHomeButton';
 
 const ApproveStudent = () => {
   const [studentEmails, setStudentEmails] = useState([]);
