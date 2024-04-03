@@ -56,6 +56,10 @@ const Home = () => {
     navigation.navigate('ViewResult');
   };
 
+  const PredictForm = () => {
+    navigation.navigate('PredictForm');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to Education Management System</Text>
@@ -104,6 +108,14 @@ const Home = () => {
         <Card style={styles.card}>
           <Card.Content>
             <Button onPress={handleApproveTeacher}>Approve Teacher</Button>
+          </Card.Content>
+        </Card>
+      )}
+
+      {userData.student === 1 && (
+        <Card style={styles.card}>
+          <Card.Content>
+            <Button onPress={PredictForm}>PredictForm</Button>
           </Card.Content>
         </Card>
       )}

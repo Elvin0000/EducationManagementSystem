@@ -18,6 +18,7 @@ import OnlineAskQuestion from './Screens/OnlineAskQuestion';
 import OnlineAnswerQuestion from './Screens/OnlineAnswerQuestion';
 import ApproveStudent from './Screens/ApproveStudent';
 import ApproveTeacher from './Screens/ApproveTeacher';
+import PredictForm from './Screens/PredictForm';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +64,7 @@ const App = () => {
             <Stack.Screen name="OnlineAnswerQuestion" component={OnlineAnswerQuestion} />
             <Stack.Screen name="ApproveStudent" component={ApproveStudent} />
             <Stack.Screen name="ApproveTeacher" component={ApproveTeacher} />
+            <Stack.Screen name="PredictForm" component={PredictForm} />
           </Stack.Navigator>
         </AuthProvider>
       )}
