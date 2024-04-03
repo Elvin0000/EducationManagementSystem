@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 20,
+    elevation: 10,
     marginBottom: 20,
     marginLeft: 10,
     marginRight: 10,

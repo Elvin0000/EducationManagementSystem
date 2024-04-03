@@ -94,6 +94,7 @@ const ApproveTeacher = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -109,12 +110,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
     backgroundColor: '#f0f0f0',
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ccc', // Border color
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    
   },
   emailContainer: {
     flex: 1,
@@ -135,17 +148,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
-    marginLeft: 10,
+    marginLeft: 5,
+    
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+    fontSize:12,
   },
   buttonWrapper: {
     position: 'absolute',
     bottom: 20,
     right: 20,
   },
+  
 });
 
 export default ApproveTeacher;
