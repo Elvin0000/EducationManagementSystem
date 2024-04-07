@@ -56,8 +56,8 @@ const Home = () => {
     navigation.navigate('ViewResult');
   };
 
-  const PredictForm = () => {
-    navigation.navigate('PredictForm');
+  const PredictResult = () => {
+    navigation.navigate('PredictResult');
   };
 
   return (
@@ -115,7 +115,7 @@ const Home = () => {
       {userData.student === 1 && (
         <Card style={styles.card}>
           <Card.Content>
-            <Button onPress={PredictForm}>PredictForm</Button>
+            <Button onPress={PredictResult}>PredictResult</Button>
           </Card.Content>
         </Card>
       )}

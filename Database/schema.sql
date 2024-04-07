@@ -70,7 +70,12 @@ CREATE TABLE answers (
 INSERT INTO questions (question_text, asked_by) VALUES 
 ('What is the capital of France?', 'test1@example.com'),
 ('What is the largest mammal on Earth?', 'test1@example.com'),
-('How does photosynthesis work?', 'test1@example.com');
+('How does photosynthesis work?', 'test1@example.com'),
+('What is the capital of Japan?', 'test2@example.com'),
+('Who is the author of "Romeo and Juliet"?', 'test2@example.com'),
+('What is the chemical symbol for water?', 'test2@example.com'),
+('What is the boiling point of water in Celsius?', 'test2@example.com'),
+('Who discovered the theory of relativity?', 'test2@example.com');
 
 INSERT INTO answers (answer_text, answered_by, question_id) VALUES
 ('The capital of France is Paris.', 'test1@example.com', 1),
@@ -101,23 +106,23 @@ VALUES (3, 'Midterm', '2024-03-15', 'test2@example.com');
 
 -- Inserting data for subjects
 INSERT INTO `subjects` (`SubjectID`, `SubjectName`, `ExamID`)
-VALUES (1, 'Math', 1);
+VALUES (1001, 'Math Score', 1);
 
 INSERT INTO `subjects` (`SubjectID`, `SubjectName`, `ExamID`)
-VALUES (2, 'Science', 1);
+VALUES (1002, 'Writing Score', 1);
 
 INSERT INTO `subjects` (`SubjectID`, `SubjectName`, `ExamID`)
-VALUES (3, 'History', 1);
+VALUES (1003, 'Readging Score', 1);
 
 -- Inserting data for marks
 INSERT INTO `marks` (`SubjectID`, `Mark`, `ExamID`, `email`)
-VALUES (1, 90, 1, 'john@example.com');
+VALUES (1001, 90, 1, 'john@example.com');
 
 INSERT INTO `marks` (`SubjectID`, `Mark`, `ExamID`, `email`)
-VALUES (2, 85, 1, 'john@example.com');
+VALUES (1002, 85, 1, 'john@example.com');
 
 INSERT INTO `marks` (`SubjectID`, `Mark`, `ExamID`, `email`)
-VALUES (3, 78, 1, 'john@example.com');
+VALUES (1003, 78, 1, 'john@example.com');
 
 -- Check Exam Name
 SELECT DISTINCT e.`ExamName`
