@@ -2,6 +2,7 @@ CREATE DATABASE IF NOT EXISTS ems;
 USE ems;
 DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `questions`;
+DROP TABLE IF EXISTS `announcement`;
 DROP TABLE IF EXISTS `marks`;
 DROP TABLE IF EXISTS `subjects`;
 DROP TABLE IF EXISTS `examinations`;
@@ -53,7 +54,6 @@ CREATE TABLE questions (
     question_text TEXT NOT NULL,
     asked_by VARCHAR(255) NOT NULL,
     asked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    -- Additional fields related to the question can be added here
 );
 
 CREATE TABLE answers (
@@ -63,7 +63,13 @@ CREATE TABLE answers (
     answered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     question_id INT,
     FOREIGN KEY (question_id) REFERENCES questions(question_id)
-    -- Additional fields related to the answer can be added here
+);
+
+CREATE TABLE announcement (
+    announcement_id INT AUTO_INCREMENT PRIMARY KEY,
+    announcement_text TEXT NOT NULL,
+    announced_by VARCHAR(255) NOT NULL,
+    announced_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Inserting sample questions
@@ -83,6 +89,14 @@ INSERT INTO answers (answer_text, answered_by, question_id) VALUES
 ('Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll.', 'test1@example.com', 3),
 ('I dk', 'test1@example.com', 3);
 
+INSERT INTO announcement (announcement_text, announced_by)
+VALUES ('Reminder: The meeting scheduled for tomorrow has been postponed.', 'test1@example.com');
+
+INSERT INTO announcement (announcement_text, announced_by)
+VALUES ('Congratulations to the winners of the coding competition!', 'test1@example.com');
+
+INSERT INTO announcement (announcement_text, announced_by)
+VALUES ('Please be informed that the office will be closed on Friday for maintenance.', 'test1@example.com');
 
 -- Inserting data for users
 INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
@@ -112,7 +126,7 @@ INSERT INTO `subjects` (`SubjectID`, `SubjectName`, `ExamID`)
 VALUES (1002, 'Writing Score', 1);
 
 INSERT INTO `subjects` (`SubjectID`, `SubjectName`, `ExamID`)
-VALUES (1003, 'Readging Score', 1);
+VALUES (1003, 'Reading Score', 1);
 
 -- Inserting data for marks
 INSERT INTO `marks` (`SubjectID`, `Mark`, `ExamID`, `email`)

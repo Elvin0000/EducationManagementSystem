@@ -56,8 +56,12 @@ const Home = () => {
     navigation.navigate('ViewResult');
   };
 
-  const PredictResult = () => {
+  const handlePredictResult = () => {
     navigation.navigate('PredictResult');
+  };
+
+  const handleAnnouncement = () => {
+    navigation.navigate('Announcement');
   };
 
   return (
@@ -115,7 +119,15 @@ const Home = () => {
       {userData.student === 1 && (
         <Card style={styles.card}>
           <Card.Content>
-            <Button onPress={PredictResult}>PredictResult</Button>
+            <Button onPress={handlePredictResult}>PredictResult</Button>
+          </Card.Content>
+        </Card>
+      )}
+
+      {(userData.student === 1 || userData.admin === 1 || userData.teacher === 1) && (
+        <Card style={styles.card}>
+          <Card.Content>
+            <Button onPress={handleAnnouncement}>Announcement</Button>
           </Card.Content>
         </Card>
       )}

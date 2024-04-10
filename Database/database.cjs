@@ -676,6 +676,61 @@ app.put('/users/:email/rejectTeacher', async (req, res) => {
   }
 });
 
+// Endpoint to get all announcements
+app.get('/announcements', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM announcement');
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching announcements:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+app.post('/announcements', async (req, res) => {
+  const { announcement_text, announced_by } = req.body;
+  try {
+    const [result] = await pool.query('INSERT INTO announcement (announcement_text, announced_by) VALUES (?, ?)', [announcement_text, announced_by]);
+    res.status(201).json({ success: true, message: 'Announcement posted successfully', announcement_id: result.insertId });
+  } catch (error) {
+    console.error('Error posting announcement:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to update an announcement
+app.put('/announcements/:announcementId', async (req, res) => {
+  const { announcement_text } = req.body;
+  const { announcementId } = req.params;
+  try {
+    const [result] = await pool.query('UPDATE announcement SET announcement_text = ? WHERE announcement_id = ?', [announcement_text, announcementId]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Announcement not found' });
+    }
+    res.json({ success: true, message: 'Announcement updated successfully' });
+  } catch (error) {
+    console.error('Error updating announcement:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to delete an announcement
+app.delete('/announcements/:announcementId', async (req, res) => {
+  const { announcementId } = req.params;
+  try {
+    const [result] = await pool.query('DELETE FROM announcement WHERE announcement_id = ?', [announcementId]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Announcement not found' });
+    }
+    res.json({ success: true, message: 'Announcement deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting announcement:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+
 // Define a basic route
 app.get('/', (req, res) => {
   res.send('Hello, this is your Node.js server!');

@@ -19,6 +19,9 @@ import OnlineAnswerQuestion from './Screens/OnlineAnswerQuestion';
 import ApproveStudent from './Screens/ApproveStudent';
 import ApproveTeacher from './Screens/ApproveTeacher';
 import PredictResult from './Screens/PredictResult';
+import Announcement from './Screens/Announcement';
+import AddAnnouncement from './Screens/AddAnnouncement';
+import ManageAnnouncement from './Screens/ManageAnnouncement';
 
 const Stack = createStackNavigator();
 
@@ -65,6 +68,9 @@ const App = () => {
             <Stack.Screen name="ApproveStudent" component={ApproveStudent} />
             <Stack.Screen name="ApproveTeacher" component={ApproveTeacher} />
             <Stack.Screen name="PredictResult" component={PredictResult} />
+            <Stack.Screen name="Announcement" component={Announcement} />
+            <Stack.Screen name="AddAnnouncement" component={AddAnnouncement} />
+            <Stack.Screen name="ManageAnnouncement" component={ManageAnnouncement} />
           </Stack.Navigator>
         </AuthProvider>
       )}
