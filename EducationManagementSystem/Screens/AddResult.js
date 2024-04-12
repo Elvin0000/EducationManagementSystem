@@ -11,8 +11,7 @@ const AddResult = ({ navigation }) => {
   const [examID, setExamID] = useState('');
 
   const [tableData, setTableData] = useState([
-    ['Subject ID', 'Subject Name', 'Marks', 'Grade'],
-    ['', '', '', ''],
+    ['Subject ID', 'Subject Name', 'Marks', 'Grade']
   ]);
 
   // Function to clear the form
@@ -21,7 +20,7 @@ const AddResult = ({ navigation }) => {
     setExamID('');
     setExamName('');
     setExamDate('');
-    setTableData([['Subject ID', 'Subject Name', 'Marks', 'Grade'], ['', '', '', '']]);
+    setTableData([['Subject ID', 'Subject Name', 'Marks', 'Grade']]);
   };
 
   useEffect(() => {
@@ -30,7 +29,7 @@ const AddResult = ({ navigation }) => {
   }, []);
 
   const addRowHandler = () => {
-    setTableData((prevData) => [...prevData, [prevData.length + 1, '', '', '']]);
+    setTableData((prevData) => [...prevData, ['', '', '', '']]);
   };
 
   const updateTableData = (rowIndex, columnIndex, value) => {
@@ -113,7 +112,7 @@ const AddResult = ({ navigation }) => {
         return;
       }
 
-      for (let i = 1; i < tableData.length; i++) {
+      for (let i = 0; i < tableData.length; i++) {
         const [subjectID, subjectName, marks] = tableData[i];
         if (!subjectID || !subjectName || !marks) {
           Alert.alert('Error', 'Subject ID, Subject Name, and Marks cannot be null');

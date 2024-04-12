@@ -178,10 +178,10 @@ const ExamDetails = ({ route, navigation }) => {
   };
   
   
-  const totalMarks = examResults.slice(1).reduce((total, row) => total + parseInt(row.Mark, 10) || 0, 0);
-  const totalSubjects = examResults.length - 1;
+  const totalMarks = examResults.reduce((total, row) => total + parseInt(row.Mark, 10) || 0, 0);
+  const totalSubjects = examResults.length;
   const averageMarks = totalSubjects > 0 ? totalMarks / totalSubjects : 0;
-
+  
 return (
   <View>
     <CustomHeader />

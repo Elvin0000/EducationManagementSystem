@@ -459,29 +459,36 @@ app.get('/studentsExam/detailResult', async (req, res) => {
 
 // Endpoint to delete an exam and associated subjects and marks
 app.delete('/studentsExam/deleteResult', async (req, res) => {
-  try {
-    const { examId } = req.query;
+  const { examId } = req.query;
 
-    // Validate examId
-    if (!examId) {
-      return res.status(400).json({ message: 'Missing examId parameter in the request' });
-    }
+  try {
+    // Start a transaction
+    await pool.query('START TRANSACTION');
 
     // Delete marks associated with the exam
-    await pool.execute('DELETE FROM marks WHERE ExamID = ?', [examId]);
+    await pool.query('DELETE FROM marks WHERE SubjectID IN (SELECT SubjectID FROM subjects WHERE ExamID = ?)', [examId]);
 
     // Delete subjects associated with the exam
-    await pool.execute('DELETE FROM subjects WHERE ExamID = ?', [examId]);
+    await pool.query('DELETE FROM subjects WHERE ExamID = ?', [examId]);
 
     // Delete the exam
-    await pool.execute('DELETE FROM examinations WHERE ExamID = ?', [examId]);
+    await pool.query('DELETE FROM examinations WHERE ExamID = ?', [examId]);
+
+    // Commit the transaction
+    await pool.query('COMMIT');
 
     res.status(200).json({ message: 'Exam, associated subjects, and marks deleted successfully' });
   } catch (error) {
     console.error('Error deleting exam, subjects, and marks:', error);
+    
+    // Rollback the transaction on error
+    await pool.query('ROLLBACK');
+
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
 
 app.post('/studentsExam/updateResult', async (req, res) => {
   try {
