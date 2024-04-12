@@ -4,7 +4,7 @@ import { Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from './Screens/Home'; 
 import ProfileScreen from './Screens/Profile'; 
-import SettingScreen from './Screens/SettingScreen'; 
+import TermsAndConditions from './Screens/TermsAndConditions'; 
 
 const Drawer = createDrawerNavigator();
 
@@ -41,7 +41,7 @@ const HomeDrawerNavigator = ({ navigation }) => {
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
-      <Drawer.Screen name="Setting" component={SettingScreen} />
+      <Drawer.Screen name="Terms And Conditions" component={TermsAndConditions} />
     </Drawer.Navigator>
   );
 };
