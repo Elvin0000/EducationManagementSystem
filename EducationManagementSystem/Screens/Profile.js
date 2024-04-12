@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -55,6 +55,18 @@ const ProfilePage = () => {
   };
 
   const handleSave = async () => {
+    // Check if the dateOfBirth follows the format yyyy-mm-dd and is a valid date
+    if (!isValidDate(dateOfBirth)) {
+      Alert.alert('Error', 'Please enter a valid date of birth in the format yyyy-mm-dd.');
+      return;
+    }
+  
+    // Check if required fields are not empty
+    if (!name.trim() || !phoneNumber.trim()) {
+      Alert.alert('Error', 'Please fill in all required fields.');
+      return;
+    }
+  
     try {
       const updatedProfile = {
         username: name,
@@ -66,48 +78,100 @@ const ProfilePage = () => {
       const response = await axios.post(`http://192.168.136.1:3002/updateProfile?email=${email}`, updatedProfile);
   
       console.log('Profile saved successfully:', response.data);
+  
+      // Show success message
+      Alert.alert('Success', 'Profile saved successfully.');
     } catch (error) {
       console.error('Error saving profile:', error);
+      
+      // Check if the error response has a status code
+      if (error.response && error.response.status === 401) {
+        Alert.alert('Error', 'Unauthorized. Please check your credentials and try again.');
+      } else {
+        Alert.alert('Error', 'Failed to save profile. Please try again later.');
+      }
     } finally {
       setEditMode(false);
     }
   };
   
+  
   const handleDelete = async () => {
     try {
-      // Retrieve the user data from AsyncStorage
-      const storedDataString = await AsyncStorage.getItem('userData');
-      
-      // Parse the stored data and extract the email
-      if (storedDataString) {
-        const storedData = JSON.parse(storedDataString);
-        const userEmail = storedData.email;
-    
-        console.log('Deleting profile with email:', userEmail);
-    
-        // Make the delete request with the retrieved email
-        const response = await axios.delete(`http://192.168.136.1:3002/deleteProfile?email=${userEmail}`);
-    
-        // Handle the response if needed
-        // For example, you can check response status and display a success message
-    
-      } else {
-        console.error('User data is undefined.');
-      }
+      // Show confirmation prompt before deleting profile
+      Alert.alert(
+        'Confirmation',
+        'Are you sure you want to delete your profile?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Delete',
+            onPress: async () => {
+              try {
+                // Retrieve the user data from AsyncStorage
+                const storedDataString = await AsyncStorage.getItem('userData');
+                
+                // Parse the stored data and extract the email
+                if (storedDataString) {
+                  const storedData = JSON.parse(storedDataString);
+                  const userEmail = storedData.email;
+              
+                  console.log('Deleting profile with email:', userEmail);
+              
+                  // Make the delete request with the retrieved email
+                  const response = await axios.delete(`http://192.168.136.1:3002/deleteProfile?email=${userEmail}`);
+              
+                  // Handle the response if needed
+                  // For example, you can check response status and display a success message
+                  if (response.status === 200) {
+                    Alert.alert('Success', 'Profile deleted successfully.');
+                    navigation.navigate('Login');
+                  } else {
+                    Alert.alert('Error', 'Failed to delete profile. Please try again later.');
+                  }
+                } else {
+                  console.error('User data is undefined.');
+                }
+              } catch (error) {
+                // Handle the error (e.g., show an error message to the user)
+                console.error('Error deleting user profile:', error);
+              
+                // Handle specific errors if needed
+                // For example, you can check if the error is a 404 and handle it differently
+                Alert.alert('Error', 'Failed to delete profile. Please try again later.');
+              }
+            },
+            style: 'destructive',
+          },
+        ],
+        { cancelable: true }
+      );
     } catch (error) {
-      // Handle the error (e.g., show an error message to the user)
-      console.error('Error deleting user profile:', error);
-    
-      // Handle specific errors if needed
-      // For example, you can check if the error is a 404 and handle it differently
-    
-    } finally {
-      navigation.navigate('Login');
+      console.error('Error showing confirmation prompt:', error);
     }
   };
+  
 
   const handleProfilePicChange = () => {
     // Implement logic to change profile picture
+  };
+
+  const isValidDate = (date) => {
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(date)) {
+      return false;
+    }
+  
+    const [year, month, day] = date.split('-').map(Number);
+    if (month < 1 || month > 12) {
+      return false;
+    }
+  
+    const daysInMonth = new Date(year, month, 0).getDate();
+    return day >= 1 && day <= daysInMonth;
   };
 
   return (

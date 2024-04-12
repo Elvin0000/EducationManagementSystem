@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import CustomHeader from '../Components/CustomHeader';
@@ -37,6 +37,9 @@ const ApproveTeacher = () => {
         // After approval, fetch the updated list of teacher emails
         fetchTeacherEmails();
         navigation.replace('ApproveTeacher'); // Navigate to the same screen
+        
+        // Alert user that the teacher is approved successfully
+        Alert.alert('Success', 'Teacher approved successfully');
       } else {
         console.error('Failed to approve user:', response.data);
       }
@@ -54,10 +57,13 @@ const ApproveTeacher = () => {
       // After rejection, fetch the updated list of teacher emails
       fetchTeacherEmails();
       navigation.replace('ApproveTeacher'); // Navigate to the same screen
+      
+      // Alert user that the teacher is rejected successfully
+      Alert.alert('Success', 'Teacher rejected successfully');
     } catch (error) {
       console.error('Error rejecting teacher:', error);
     }
-  };
+  }; 
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>

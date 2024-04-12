@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet,Alert } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomHeader from '../Components/CustomHeader';
@@ -25,7 +25,8 @@ const AddAnnouncement = ({ navigation }) => {
   const handlePostAnnouncement = async () => {
     try {
       if (!announcementText.trim()) {
-        console.error('Error posting announcement: Announcement cannot be empty');
+        // Alert user if the announcement is empty
+        Alert.alert('Error', 'Announcement cannot be empty');
         return;
       }
   
@@ -43,11 +44,16 @@ const AddAnnouncement = ({ navigation }) => {
       // Post the announcement using the retrieved user email
       await axios.post('http://192.168.136.1:3002/announcements', { announcement_text: announcementText, announced_by: userEmail });
       setAnnouncementText('');
+  
+      // Alert user that the announcement is posted successfully
+      Alert.alert('Success', 'Announcement posted successfully');
+  
       navigation.goBack();
     } catch (error) {
       console.error('Error posting announcement:', error);
     }
   };
+  
 
   return (
     <View style={styles.container}>

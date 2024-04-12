@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
 import axios from 'axios';
 import CustomHeader from '../Components/CustomHeader';
 
@@ -23,6 +23,9 @@ const ManageAnnouncement = ({ route, navigation }) => {
         // Update announcement in local state with edited text
         setAnnouncement({ ...announcement, announcement_text: editedText });
         setEditMode(false);
+        
+        // Display success message
+        Alert.alert('Success', 'Announcement updated successfully');
       } else {
         console.error('Failed to update announcement:', response.data.message);
       }
@@ -30,20 +33,40 @@ const ManageAnnouncement = ({ route, navigation }) => {
       console.error('Error updating announcement:', error);
     }
   };
+  
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://192.168.136.1:3002/announcements/${announcement.announcement_id}`);
-      if (response.data.success) {
-        // Handle success, such as navigating back to the previous screen
-        navigation.goBack();
-      } else {
-        console.error('Failed to delete announcement:', response.data.message);
-      }
+      // Prompt the user to confirm before deleting
+      Alert.alert(
+        'Confirm Deletion',
+        'Are you sure you want to delete this announcement?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Delete',
+            onPress: async () => {
+              const response = await axios.delete(`http://192.168.136.1:3002/announcements/${announcement.announcement_id}`);
+              if (response.data.success) {
+                // Handle success, such as navigating back to the previous screen
+                navigation.goBack();
+                // Display success message
+                Alert.alert('Success', 'Announcement deleted successfully');
+              } else {
+                console.error('Failed to delete announcement:', response.data.message);
+              }
+            },
+          },
+        ]
+      );
     } catch (error) {
       console.error('Error deleting announcement:', error);
     }
   };
+  
 
   const handleCancelEdit = () => {
     // Reset edited text and exit edit mode

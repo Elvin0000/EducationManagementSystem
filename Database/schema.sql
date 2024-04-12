@@ -75,19 +75,19 @@ CREATE TABLE announcement (
 -- Inserting sample questions
 INSERT INTO questions (question_text, asked_by) VALUES 
 ('What is the capital of France?', 'test1@example.com'),
-('What is the largest mammal on Earth?', 'test1@example.com'),
+('What is the largest mammal on Earth?', 'test2@example.com'),
 ('How does photosynthesis work?', 'test1@example.com'),
 ('What is the capital of Japan?', 'test2@example.com'),
-('Who is the author of "Romeo and Juliet"?', 'test2@example.com'),
+('Who is the author of "Romeo and Juliet"?', 'test1@example.com'),
 ('What is the chemical symbol for water?', 'test2@example.com'),
-('What is the boiling point of water in Celsius?', 'test2@example.com'),
+('What is the boiling point of water in Celsius?', 'test1@example.com'),
 ('Who discovered the theory of relativity?', 'test2@example.com');
 
 INSERT INTO answers (answer_text, answered_by, question_id) VALUES
 ('The capital of France is Paris.', 'test1@example.com', 1),
-('The largest mammal on Earth is the blue whale.', 'test1@example.com', 2),
+('The largest mammal on Earth is the blue whale.', 'test2@example.com', 2),
 ('Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll.', 'test1@example.com', 3),
-('I dk', 'test1@example.com', 3);
+('I dk', 'test2@example.com', 3);
 
 INSERT INTO announcement (announcement_text, announced_by)
 VALUES ('Reminder: The meeting scheduled for tomorrow has been postponed.', 'test1@example.com');
@@ -111,12 +111,6 @@ VALUES ('Test2', 'test', 'test2@example.com', '1990-01-01', '0123456789', 0, 0, 
 -- Inserting data for examinations
 INSERT INTO `examinations` (`ExamID`, `ExamName`, `ExamDate`, `email`)
 VALUES (1, 'Midterm', '2024-03-15', 'john@example.com');
-
-INSERT INTO `examinations` (`ExamID`, `ExamName`, `ExamDate`, `email`)
-VALUES (2, 'Midterm', '2024-03-15', 'test1@example.com');
-
-INSERT INTO `examinations` (`ExamID`, `ExamName`, `ExamDate`, `email`)
-VALUES (3, 'Midterm', '2024-03-15', 'test2@example.com');
 
 -- Inserting data for subjects
 INSERT INTO `subjects` (`SubjectID`, `SubjectName`, `ExamID`)

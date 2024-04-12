@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomHeader from '../Components/CustomHeader';
@@ -25,6 +25,8 @@ const OnlineAskQuestion = ({ navigation }) => {
   const handlePostQuestion = async () => {
     try {
       if (!questionText.trim()) {
+        // Alert user that the question cannot be null
+        Alert.alert('Error', 'Question cannot be null');
         console.error('Error posting question: Question cannot be empty');
         return;
       }
@@ -44,10 +46,14 @@ const OnlineAskQuestion = ({ navigation }) => {
       await axios.post('http://192.168.136.1:3002/questions', { question_text: questionText, asked_by: userEmail });
       setQuestionText('');
       navigation.goBack();
+  
+      // Inform the user that the question has been posted successfully
+      Alert.alert('Success', 'Question posted successfully');
     } catch (error) {
       console.error('Error posting question:', error);
     }
   };
+  
 
   return (
     <View style={styles.container}>

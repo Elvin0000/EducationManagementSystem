@@ -35,7 +35,7 @@ const PredictResult = () => {
       });
 
       // Check if all Pickers have a selected value
-      if (gender !== "" && ethnicity !== "" && parentalEducation !== "" && lunchType !== "" && testPreparationCourse !== "") {
+      if (gender !== "" && ethnicity !== "" && parentalEducation !== "" && lunchType !== "" && testPreparationCourse !== "" && readingScore !== "" &&  writingScore !== "") {
         setAllPickersSelected(true);
         // Perform any other necessary actions here
       } else {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import NavigateToHomeButton from '../Components/NavigateToHomeButton';
@@ -37,6 +37,9 @@ const ApproveStudent = () => {
         // After approval, fetch the updated list of student emails
         fetchStudentEmails();
         navigation.replace('ApproveStudent'); // Navigate to the same screen
+        
+        // Alert user that the student is approved successfully
+        Alert.alert('Success', 'Student approved successfully');
       } else {
         console.error('Failed to approve user:', response.data);
       }
@@ -44,6 +47,7 @@ const ApproveStudent = () => {
       console.error('Error approving student:', error);
     }
   };
+  
   
 
   const handleReject = async (email) => {
@@ -54,10 +58,14 @@ const ApproveStudent = () => {
       // After rejection, fetch the updated list of student emails
       fetchStudentEmails();
       navigation.replace('ApproveStudent'); // Navigate to the same screen
+      
+      // Alert user that the student is rejected successfully
+      Alert.alert('Success', 'Student rejected successfully');
     } catch (error) {
       console.error('Error rejecting student:', error);
     }
   };
+  
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>

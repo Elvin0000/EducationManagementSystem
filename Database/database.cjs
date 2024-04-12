@@ -27,6 +27,21 @@ const checkEmailExists = async (email) => {
   return rows[0].count > 0;
 };
 
+const checkExamIDExists = async (examID) => {
+  try {
+    // Query the database to check if the exam ID exists
+    const [rows] = await pool.execute(
+      'SELECT COUNT(*) AS count FROM `examinations` WHERE `ExamID` = ?',
+      [examID]
+    );
+    const count = rows[0].count;
+    return count > 0;
+  } catch (error) {
+    console.error('Error checking exam ID existence:', error);
+    throw error;
+  }
+};
+
 // Add user to the database
 const addUser = async (email, password, selectedRole) => {
   const [result, fields] = await pool.execute(
@@ -292,6 +307,18 @@ app.delete('/deleteProfile', async (req, res) => {
 app.post('/addResult', async (req, res) => {
   try {
     const { email, examName, examDate, examID, tableData } = req.body;
+
+    // Check if the email exists
+    const emailExists = await checkEmailExists(email);
+    if (!emailExists) {
+      return res.status(400).json({ success: false, message: 'Email does not exist.' });
+    }
+
+    // Check if the exam ID exists
+    const examIDExists = await checkExamIDExists(examID);
+    if (examIDExists) {
+      return res.status(400).json({ success: false, message: 'Exam ID already exists.' });
+    }
 
     try {
       // Insert into 'examinations' table

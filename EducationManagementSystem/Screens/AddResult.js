@@ -60,6 +60,22 @@ const AddResult = ({ navigation }) => {
     setTableData(newData);
   };
 
+  const isValidDate = (date) => {
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(date)) {
+      return false;
+    }
+
+    const [year, month, day] = date.split('-').map(Number);
+    if (month < 1 || month > 12) {
+      return false;
+    }
+
+    const daysInMonth = new Date(year, month, 0).getDate();
+    return day >= 1 && day <= daysInMonth;
+  };
+
+
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -67,17 +83,44 @@ const AddResult = ({ navigation }) => {
 
   const handleAddResult = async () => {
     try {
-      if (email.trim() === '' || examID.trim() === '') {
-        Alert.alert('Error', 'Please enter an email and examID');
+      if (email.trim() === '') {
+        Alert.alert('Error', 'Email cannot be null');
         return;
       }
-
-      // Check email validation only when the "Add Result" button is pressed
+  
       if (!validateEmail()) {
         Alert.alert('Error', 'Please enter a valid email');
         return;
       }
+  
+      if (examID.trim() === '') {
+        Alert.alert('Error', 'Exam ID cannot be null');
+        return;
+      }
+  
+      if (!examName.trim()) {
+        Alert.alert('Error', 'Exam Name cannot be null');
+        return;
+      }
+  
+      if (!examDate.trim()) {
+        Alert.alert('Error', 'Exam Date cannot be null');
+        return;
+      }
+  
+      if (!isValidDate(examDate)) {
+        Alert.alert('Error', 'Please enter a valid exam date in the format yyyy-mm-dd');
+        return;
+      }
 
+      for (let i = 1; i < tableData.length; i++) {
+        const [subjectID, subjectName, marks] = tableData[i];
+        if (!subjectID || !subjectName || !marks) {
+          Alert.alert('Error', 'Subject ID, Subject Name, and Marks cannot be null');
+          return;
+        }
+      }
+  
       const response = await fetch('http://192.168.136.1:3002/addResult', {
         method: 'POST',
         headers: {
@@ -91,16 +134,21 @@ const AddResult = ({ navigation }) => {
           tableData,
         }),
       });
-
+  
       console.log('Table Data:', tableData);
       console.log('Data being sent:', { email, examID, examName, examDate, tableData });
-
+  
       if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Failed to add result: ${errorMessage}`);
+        const errorMessage = await response.json();
+        if (response.status === 400) {
+          Alert.alert('Error', errorMessage.message);
+        } else {
+          throw new Error(`Failed to add result: ${errorMessage}`);
+        }
+        return;
       }
       console.log('API Response:', response);
-
+  
       // Show success message
       Alert.alert('Success', 'Result added successfully', [
         {
@@ -117,6 +165,8 @@ const AddResult = ({ navigation }) => {
       Alert.alert('Error', 'Failed to add result. Please try again.');
     }
   };
+  
+  
 
   return (
     <View style={styles.container}>

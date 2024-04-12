@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Alert } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomHeader from '../Components/CustomHeader';
@@ -38,11 +38,12 @@ const OnlineAnswerQuestion = ({ route }) => {
     }
   };
 
-  // Function to handle posting a new answer
   const handleReply = async () => {
     try {
       // Check if newAnswer is not empty
       if (newAnswer.trim() === '') {
+        // Alert user that the answer cannot be null
+        Alert.alert('Error', 'Answer cannot be null');
         console.error('Please enter an answer.');
         return;
       }
@@ -75,7 +76,8 @@ const OnlineAnswerQuestion = ({ route }) => {
     } catch (error) {
       console.error('Error posting answer:', error);
     }
-  }
+  };
+  
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
