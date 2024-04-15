@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Appbar } from 'react-native-paper';
 
 const CustomHeader = () => {
   const navigation = useNavigation();
@@ -11,15 +12,15 @@ const CustomHeader = () => {
   };
 
   return (
-    <View style={styles.header}>
+    <Appbar.Header style={styles.header}>
+      <Appbar.BackAction onPress={navigation.goBack} />
       <Text style={styles.title}>{route.name}</Text>
       <TouchableOpacity onPress={navigateToHome}>
         <Text style={styles.homeButton}>Home</Text>
       </TouchableOpacity>
-    </View>
+    </Appbar.Header>
   );
 };
-
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
@@ -35,11 +36,13 @@ const styles = StyleSheet.create({
     color: '#4494ad',
     fontSize: 18,
     fontWeight: 'bold',
+    marginLeft: 16,
   },
   homeButton: {
     fontFamily: 'Marker Felt', // Add your custom font here
     color: '#4494ad',
     fontSize: 16,
+    marginRight: 16,
   },
 });
 

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { Avatar } from 'react-native-paper';
+import SelectAvatar from '../Screens/SelectAvatar';
 
 const ProfilePage = () => {
   const [profilePic, setProfilePic] = useState('');
@@ -95,7 +97,6 @@ const ProfilePage = () => {
     }
   };
   
-  
   const handleDelete = async () => {
     try {
       // Show confirmation prompt before deleting profile
@@ -154,11 +155,10 @@ const ProfilePage = () => {
     }
   };
   
-
-  const handleProfilePicChange = () => {
-    // Implement logic to change profile picture
+  const handleProfilePicChange = (avatarPath) => {
+    setProfilePic(avatarPath);
+    navigation.goBack(); // Navigate back to the profile page after selecting an avatar
   };
-
   const isValidDate = (date) => {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(date)) {
@@ -176,10 +176,10 @@ const ProfilePage = () => {
 
   return (
     <View style={styles.container}>
+      <Avatar.Image size={100} source={profilePic ? { uri: profilePic } : require('../assets/avatar/avatar1.png')} />
       <Text style={styles.heading}>Profile</Text>
       {!editMode ? (
         <View style={styles.profileInfo1}>
-          {/* <Image source={{ uri: profilePic }} style={styles.profilePic} /> */}
           <Text style={styles.profileText}>Name: {name}</Text>
           <Text style={styles.profileText}>Date of Birth: {dateOfBirth}</Text>
           <Text style={styles.profileText}>Phone Number: {phoneNumber}</Text>
@@ -187,8 +187,7 @@ const ProfilePage = () => {
         </View>
       ) : (
         <View style={styles.profileInfo2}>
-          <TouchableOpacity onPress={handleProfilePicChange}>
-            {/* <Image source={{ uri: profilePic }} style={styles.profilePic} /> */}
+          <TouchableOpacity onPress={() => navigation.navigate('SelectAvatar', { handleProfilePicChange })}>
             <Text style={styles.changePicText}>Change Profile Picture</Text>
           </TouchableOpacity>
           <TextInput
@@ -239,14 +238,8 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
     marginBottom: 20,
-    fontWeight:"bold",
-    color:"#4494ad"
-  },
-  profilePic: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-    borderRadius: 50,
+    fontWeight: 'bold',
+    color: '#4494ad',
   },
   changePicText: {
     color: 'blue',
@@ -280,7 +273,7 @@ const styles = StyleSheet.create({
   profileText: {
     textAlign: 'left',
     marginBottom: 5,
-    fontWeight:"bold",
+    fontWeight: 'bold',
   },
   profileInfo1: {
     width: '100%',
