@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Searchbar } from 'react-native-paper';
 import CustomHeader from '../Components/CustomHeader';
 
 const Announcement = () => {
@@ -89,11 +90,12 @@ const Announcement = () => {
   return (
     <View style={styles.container}>
         <CustomHeader />
-        <TextInput
-            style={styles.searchInput}
-            placeholder="Search announcements"
-            value={searchTerm}
-            onChangeText={text => setSearchTerm(text)}
+        {/* Use Searchbar */}
+        <Searchbar
+          placeholder="Search announcements"
+          onChangeText={setSearchTerm}
+          value={searchTerm}
+          style={styles.searchBar}
         />
         <FlatList
             data={filterAnnouncements()}
@@ -106,7 +108,6 @@ const Announcement = () => {
             </TouchableOpacity>
         ) : null}
     </View>
-
   );
 };
 
@@ -138,13 +139,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 10,
   },
-  searchInput: {
+  searchBar: {
     marginTop: 10,
     marginBottom: 10,
-    padding: 10,
+    padding: 3,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 50,
   },
   addButton: {
     position: 'absolute',

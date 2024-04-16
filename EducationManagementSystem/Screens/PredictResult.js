@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet,TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert ,Modal} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import CustomHeader from '../Components/CustomHeader';
+import { Dialog, Paragraph, Button as PaperButton } from 'react-native-paper';
+import { BlurView } from '@react-native-community/blur';
 
 const PredictResult = () => {
   const [gender, setGender] = useState('');
@@ -14,9 +16,25 @@ const PredictResult = () => {
   const [predictionResult, setPredictionResult] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [allPickersSelected, setAllPickersSelected] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   const handleSubmit = async () => {
     try {
+      // Check if all Pickers have a selected value
+      if (!gender || !ethnicity || !parentalEducation || !lunchType || !testPreparationCourse || !readingScore || !writingScore) {
+        setAllPickersSelected(false);
+        Alert.alert(
+          'Incomplete Selection',
+          'Please select values for all fields before submitting.',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
+        return;
+      } else {
+        setAllPickersSelected(true);
+      }
+
+      setIsSubmitted(true); // Set the submission status to true
+
       const formData = new FormData();
       formData.append('gender', gender);
       formData.append('ethnicity', ethnicity);
@@ -25,40 +43,26 @@ const PredictResult = () => {
       formData.append('test_preparation_course', testPreparationCourse);
       formData.append('reading_score', readingScore);
       formData.append('writing_score', writingScore);
-  
+
       const response = await fetch('http://192.168.136.1:5000/predictdata', {
         method: 'POST',
         body: formData,
         headers: {
-          'Content-Type': 'multipart/form-data', 
+          'Content-Type': 'multipart/form-data',
         },
       });
 
-      // Check if all Pickers have a selected value
-      if (gender !== "" && ethnicity !== "" && parentalEducation !== "" && lunchType !== "" && testPreparationCourse !== "" && readingScore !== "" &&  writingScore !== "") {
-        setAllPickersSelected(true);
-        // Perform any other necessary actions here
-      } else {
-        setAllPickersSelected(false);
-        Alert.alert(
-          'Incomplete Selection',
-          'Please select values for all fields before submitting.',
-          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-        );
-        // Show a message to the user indicating that all Pickers need to be selected
-      }
-
-      // Set the submission status to true
-      setIsSubmitted(true);
-  
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       const data = await response.json();
       setPredictionResult(data.result);
+      setDialogVisible(true); // Show the dialog after receiving the prediction
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      // No need to reset submission status here, as we want the dialog to stay open until the user interacts with it
     }
   };
   
@@ -152,11 +156,20 @@ const PredictResult = () => {
           <Text style={styles.buttonText}>Predict your Maths Score</Text>
         </TouchableOpacity>
   
-        {isSubmitted && allPickersSelected && (
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoText}>The prediction for maths score is {predictionResult}</Text>
-          </View>
-        )}
+        <Modal visible={dialogVisible} transparent={true} animationType="fade">
+          <BlurView style={styles.blurView} blurType="dark" blurAmount={10}>
+            <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)} style={styles.dialog}>
+              <Dialog.Title>Prediction Result</Dialog.Title>
+              <Dialog.Content>
+                <Paragraph>The prediction for maths score is {predictionResult}</Paragraph>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <PaperButton onPress={() => setDialogVisible(false)}>OK</PaperButton>
+              </Dialog.Actions>
+            </Dialog>
+          </BlurView>
+        </Modal>
+
       </View>
     </View>
   );
@@ -239,6 +252,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
+  },
+  blurView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

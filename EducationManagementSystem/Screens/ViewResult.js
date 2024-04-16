@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, StyleSheet }
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomHeader from '../Components/CustomHeader';
+import { Divider } from 'react-native-paper'; // Import Divider from react-native-paper
 
 const ViewResult = () => {
   const [email, setEmail] = useState('');
@@ -66,9 +67,12 @@ const ViewResult = () => {
           data={examinations}
           keyExtractor={(item) => item.ExamID.toString()}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigateToExamDetails(item.ExamID)}>
-              <Text style={styles.examItem}>{item.ExamName}</Text>
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity onPress={() => navigateToExamDetails(item.ExamID)}>
+                <Text style={styles.examItem}>{item.ExamName}</Text>
+              </TouchableOpacity>
+              <Divider />
+            </View>
           )}
         />
       )}

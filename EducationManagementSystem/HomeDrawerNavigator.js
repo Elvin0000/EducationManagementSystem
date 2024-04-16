@@ -23,18 +23,21 @@ const HomeDrawerNavigator = ({ navigation }) => {
     }
   };
 
+  // Custom drawer content component
+  const CustomDrawerContent = (props) => (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <DrawerItem
+        label="Logout"
+        onPress={handleLogout}
+        inactiveTintColor="#FF0000" // Set text color to red
+      />
+    </DrawerContentScrollView>
+  );
+
   return (
     <Drawer.Navigator 
-      drawerContent={(props) => (
-        <DrawerContentScrollView {...props}>
-          <DrawerItemList {...props} />
-          <DrawerItem
-            label="Logout"
-            onPress={handleLogout}
-            inactiveTintColor="#FF0000" // Set text color to red
-          />
-        </DrawerContentScrollView>
-      )}
+      drawerContent={CustomDrawerContent}
       drawerContentOptions={{
         activeTintColor: '#4494ad', // Set active tint color
         labelStyle: styles.labelStyle, // Apply custom label style

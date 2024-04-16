@@ -1,14 +1,14 @@
-// SearchStudent.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
+import { Searchbar, Divider } from 'react-native-paper';
 import CustomHeader from '../Components/CustomHeader';
 
 const SearchStudent = ({ navigation }) => {
   const [studentEmails, setStudentEmails] = useState([]);
   const [filteredEmails, setFilteredEmails] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchStudentEmails = async () => {
     try {
@@ -34,7 +34,6 @@ const SearchStudent = ({ navigation }) => {
   const navigateToStudentExam = (email) => {
     navigation.navigate('StudentExamList', { email });
   };
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,14 +47,22 @@ const SearchStudent = ({ navigation }) => {
     filterEmails();
   }, [searchTerm, studentEmails]);
 
+  // Custom theme for Searchbar
+  const searchBarTheme = {
+    colors: {
+      primary: '#4494ad', // Change primary color
+    },
+  };
+
   return (
     <View>
       <CustomHeader />
-      <TextInput
-        style={styles.searchBar}
+      <Searchbar
         placeholder="Search by email"
-        onChangeText={(text) => setSearchTerm(text)}
+        onChangeText={setSearchTerm}
         value={searchTerm}
+        style={styles.searchBar}
+        theme={searchBarTheme} // Apply custom theme
       />
 
       {isLoading ? (
@@ -70,7 +77,10 @@ const SearchStudent = ({ navigation }) => {
           keyExtractor={(item) => item}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => navigateToStudentExam(item)}>
-              <Text style={styles.emailItem}>{item}</Text>
+              <View>
+                <Text style={styles.emailItem}>{item}</Text>
+                <Divider />
+              </View>
             </TouchableOpacity>
           )}
         />
@@ -81,11 +91,7 @@ const SearchStudent = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   searchBar: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
     margin: 10,
-    padding: 10,
   },
   emailItem: {
     fontSize: 18,

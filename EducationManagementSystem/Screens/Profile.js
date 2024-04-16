@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Alert, Modal, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Avatar } from 'react-native-paper';
+import { Surface, Text } from 'react-native-paper';
 import avatar1 from '../assets/avatar/avatar1.png';
 import avatar2 from '../assets/avatar/avatar2.png';
 import avatar3 from '../assets/avatar/avatar3.png';
@@ -14,7 +15,7 @@ import avatar7 from '../assets/avatar/avatar7.png';
 import avatar8 from '../assets/avatar/avatar8.png';
 import avatar9 from '../assets/avatar/avatar9.png';
 import avatar10 from '../assets/avatar/avatar10.png';
-
+import backgroundImage from '../assets/educationImage.webp';
 
 const ProfilePage = () => {
   const [profilePic, setProfilePic] = useState('');
@@ -172,82 +173,98 @@ const ProfilePage = () => {
   ];
 
   return (
-    <View style={styles.container}>
-      <Avatar.Image size={100} source={profilePic} />
-      <Text style={styles.heading}>Profile</Text>
-      {!editMode ? (
-        <View style={styles.profileInfo1}>
-          <Text style={styles.profileText}>Name: {name}</Text>
-          <Text style={styles.profileText}>Date of Birth: {dateOfBirth}</Text>
-          <Text style={styles.profileText}>Phone Number: {phoneNumber}</Text>
-          <Text style={styles.profileText}>Email: {email}</Text>
-        </View>
-      ) : (
-        <View style={styles.profileInfo2}>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Text style={styles.changePicText}>Change Avatar</Text>
-          </TouchableOpacity>
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={name}
-            onChangeText={(text) => setName(text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Date of Birth"
-            value={dateOfBirth}
-            onChangeText={(text) => setDateOfBirth(text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Phone Number"
-            value={phoneNumber}
-            onChangeText={(text) => setPhoneNumber(text)}
-          />
-        </View>
-      )}
-      {!editMode ? (
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleEdit}>
-            <Text style={styles.buttonText}>Edit Profile</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={handleSave}>
-          <Text style={styles.buttonText}>Save</Text>
-        </TouchableOpacity>
-      )}
-      {/* Avatar selection modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.heading}>Select Avatar</Text>
-            <View style={styles.avatarContainer}>
-              {avatars.map((avatar, index) => (
-                <TouchableOpacity key={index} onPress={() => handleAvatarSelection(index)}>
-                  <Avatar.Image
-                    size={100}
-                    source={avatar}
-                    style={[styles.avatar, selectedAvatar === avatar && styles.selectedAvatar]}
-                  />
-                </TouchableOpacity>
-              ))}
+    <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+      <View style={styles.container}>
+        <Avatar.Image size={100} source={profilePic} />
+        {!editMode && <Text style={styles.heading}>Profile</Text>}
+
+        {!editMode ? (
+          <Surface style={styles.profileInfo1} elevation={5}>
+            <View style={styles.labelContainer}>
+              <Text style={[styles.labelText, styles.profileText]}>Name:</Text>
+              <Text style={styles.profileText}>{name}</Text>
             </View>
-            <TouchableOpacity style={styles.saveButton} onPress={handleProfilePicChange}>
-              <Text style={styles.saveButtonText}>Save</Text>
+            <View style={styles.labelContainer}>
+              <Text style={[styles.labelText, styles.profileText]}>Date of Birth:</Text>
+              <Text style={styles.profileText}>{dateOfBirth}</Text>
+            </View>
+            <View style={styles.labelContainer}>
+              <Text style={[styles.labelText, styles.profileText]}>Phone Number:</Text>
+              <Text style={styles.profileText}>{phoneNumber}</Text>
+            </View>
+            <View style={styles.labelContainer}>
+              <Text style={[styles.labelText, styles.profileText]}>Email:</Text>
+              <Text style={styles.profileText}>{email}</Text>
+            </View>
+          </Surface>
+
+        ) : (
+          <View style={styles.profileInfo2}>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Text style={styles.changePicText}>Change Avatar</Text>
+            </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={name}
+              onChangeText={(text) => setName(text)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Date of Birth"
+              value={dateOfBirth}
+              onChangeText={(text) => setDateOfBirth(text)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              value={phoneNumber}
+              onChangeText={(text) => setPhoneNumber(text)}
+            />
+          </View>
+        )}
+        {!editMode ? (
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleEdit}>
+              <Text style={styles.buttonText}>Edit Profile</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
-    </View>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handleSave}>
+            <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
+        )}
+        {/* Avatar selection modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.heading}>Select Avatar</Text>
+              <View style={styles.avatarContainer}>
+                {avatars.map((avatar, index) => (
+                  <TouchableOpacity key={index} onPress={() => handleAvatarSelection(index)}>
+                    <Avatar.Image
+                      size={100}
+                      source={avatar}
+                      style={[styles.avatar, selectedAvatar === avatar && styles.selectedAvatar]}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <TouchableOpacity style={styles.saveButton} onPress={handleProfilePicChange}>
+                <Text style={styles.saveButtonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </ImageBackground>
   );
 };
 
@@ -257,8 +274,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: 'white', // Set background color to white
+    backgroundColor: 'transparent', // Set background color to transparent
   },
+  backgroundImage: {
+    flex: 1,
+    height: 180, // Set the desired height for the background image
+    resizeMode: 'cover', // Cover the entire container
+    justifyContent: 'center',
+},
   heading: {
     fontSize: 24,
     marginBottom: 20,
@@ -267,7 +290,8 @@ const styles = StyleSheet.create({
   },
   changePicText: {
     color: 'blue',
-    marginBottom: 10,
+    marginBottom: 45,
+    marginTop:5,
   },
   input: {
     width: '100%',
@@ -294,15 +318,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
   },
+  profileInfo1: {
+    padding: 25,
+    width: '100%',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    elevation:10,
+  },
   profileText: {
     textAlign: 'left',
+    marginLeft:5,
     marginBottom: 5,
-    fontWeight: 'bold',
+    fontFamily: 'Open Sans',
   },
-  profileInfo1: {
-    width: '100%',
-    alignItems: 'left',
-    marginBottom: 20,
+  labelText: {
+    fontWeight: 'bold',
   },
   profileInfo2: {
     width: '100%',
@@ -350,6 +380,11 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: 'white',
     fontSize: 18,
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
 });
 

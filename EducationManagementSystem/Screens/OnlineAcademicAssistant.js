@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { Searchbar } from 'react-native-paper';
 import CustomHeader from '../Components/CustomHeader'; 
 
 const OnlineAcademicAssistant = () => {
@@ -53,11 +54,12 @@ const OnlineAcademicAssistant = () => {
   return (
     <View style={styles.container}>
       <CustomHeader title="Online Academic Session" /> 
-      <TextInput
-        style={styles.searchInput}
+      {/* Use Searchbar */}
+      <Searchbar
         placeholder="Search questions"
+        onChangeText={setSearchTerm}
         value={searchTerm}
-        onChangeText={text => setSearchTerm(text)}
+        style={styles.searchBar}
       />
       <View style={styles.flatListContainer}>
         <FlatList
@@ -106,20 +108,12 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: 'center',
   },
-
   askButtonText: {
     color: 'white',
     fontSize: 16,
   },
-  searchInput: {
-    marginTop: 10,
-    marginBottom: 20,
-    marginLeft: 20,
-    marginRight: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
+  searchBar: {
+    margin: 20,
   },
   flatListContainer: {
     flex: 1,
@@ -129,6 +123,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
 
 export default OnlineAcademicAssistant;

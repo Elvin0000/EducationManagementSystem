@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, StyleSheet, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Divider, Searchbar } from 'react-native-paper'; // Import Searchbar from react-native-paper
 import CustomHeader from '../Components/CustomHeader';
 
 const StudentExamList = ({ route }) => {
@@ -53,11 +54,13 @@ const StudentExamList = ({ route }) => {
   return (
     <View>
       <CustomHeader />
-      <TextInput
-        style={styles.searchBar}
+      {/* Include Searchbar component */}
+      <Searchbar
         placeholder="Search by exam name"
         onChangeText={(text) => setSearchTerm(text)}
         value={searchTerm}
+        style={styles.searchBar}
+        // Apply custom theme if needed
       />
       {isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
@@ -71,7 +74,10 @@ const StudentExamList = ({ route }) => {
           keyExtractor={(item) => item.ExamID.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => navigateToExamDetails(item.ExamID)}>
-              <Text style={styles.examItem}>{item.ExamName}</Text>
+              <View>
+                <Text style={styles.examItem}>{item.ExamName}</Text>
+                <Divider />
+              </View>
             </TouchableOpacity>
           )}
         />
@@ -91,11 +97,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchBar: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    margin: 10,
-    padding: 10,
+    margin: 10, // Adjust margin as needed
   },
 });
 
