@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, BackHandler } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, BackHandler, Image} from 'react-native';
+import { Carousel } from 'react-native-ui-lib';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import academicAssistantImage from '../assets/academicAssistantImage.webp';
+import announcementImage from '../assets/announcementImage.jpg';
+import approveImage1 from '../assets/approveImage1.webp';
+import approveImage2 from '../assets/approveImage2.png';
+import approveImage3 from '../assets/approveImage3.jpg';
+import manageResultImage2 from '../assets/manageResultImage2.jpeg';
+import viewExamResultImage from '../assets/viewExamResultImage.jpeg';
+import viewResultImage from '../assets/viewResultImage.jpg';
+import examResultImage from '../assets/examResultImage.jpg';
+import predictImage from '../assets/predictImage.jpg';
 
 export default class LoginPage extends Component {
   constructor(props) {
@@ -139,26 +150,48 @@ render() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Education Management System</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={(text) => this.setState({ email: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={(text) => this.setState({ password: text })}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-        <Text>Create an account</Text>
-      </TouchableOpacity>
+      {/* Carousel */}
+      <Carousel 
+        containerStyle={styles.carouselContainer} 
+        loop 
+        autoplay 
+        autoplayInterval={3000}
+      >
+        <Image source={academicAssistantImage} style={styles.carouselImage} />
+        <Image source={announcementImage} style={styles.carouselImage} />
+        <Image source={approveImage1} style={styles.carouselImage} />
+        <Image source={approveImage2} style={styles.carouselImage} />
+        <Image source={approveImage3} style={styles.carouselImage} />
+        <Image source={manageResultImage2} style={styles.carouselImage} />
+        <Image source={viewExamResultImage} style={styles.carouselImage} />
+        <Image source={viewResultImage} style={styles.carouselImage} />
+        <Image source={examResultImage} style={styles.carouselImage} />
+        <Image source={predictImage} style={styles.carouselImage} />
+      </Carousel>
+
+      {/* Login Form */}
+      <View style={styles.loginFormContainer}>
+        <Text style={styles.heading}>Education Management System</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => this.setState({ email: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={(text) => this.setState({ password: text })}
+          secureTextEntry
+        />
+        <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+          <Text>Create an account</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -166,6 +199,19 @@ render() {
 
 const styles = StyleSheet.create({
 container: {
+  flex: 1,
+},
+carouselContainer: {
+  height: 200,
+  marginBottom: 20,
+},
+carouselImage: {
+  flex: 1,
+  resizeMode: 'cover',
+  width: '100%',
+  height: '100%',
+},
+loginFormContainer: {
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',

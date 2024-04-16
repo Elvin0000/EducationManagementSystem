@@ -4,6 +4,8 @@ import { Divider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native'; 
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 
 const Setting = () => {
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
@@ -215,12 +217,14 @@ const Setting = () => {
     <View style={styles.container}>
       <TouchableOpacity onPress={handleChangePassword}>
         <View style={styles.item}>
+          <Icon name="password" size={20} color="#000" style={styles.icon} />
           <Text style={styles.clickableText}>Change Password</Text>
         </View>
       </TouchableOpacity>
       <Divider />
       <TouchableOpacity onPress={handleDeleteAccount}>
         <View style={styles.item}>
+          <AntIcon name="deleteuser" size={20} color="#000" style={styles.icon} />
           <Text style={styles.clickableText}>Delete Account</Text>
         </View>
       </TouchableOpacity>
@@ -297,10 +301,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#cccccc',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   clickableText: {
     fontSize: 16,
     color: 'black',
+    marginLeft: 10,
   },
   modalContainer: {
     flex: 1,
@@ -371,6 +378,9 @@ const styles = StyleSheet.create({
   },
   doneButton: {
     backgroundColor: '#4494ad',
+  },
+  icon: {
+    marginRight: 10,
   },
 });
 

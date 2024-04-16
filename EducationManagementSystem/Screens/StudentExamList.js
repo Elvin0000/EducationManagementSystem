@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, StyleSheet, 
 import { useNavigation } from '@react-navigation/native';
 import { Divider, Searchbar } from 'react-native-paper'; // Import Searchbar from react-native-paper
 import CustomHeader from '../Components/CustomHeader';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const StudentExamList = ({ route }) => {
   const { email } = route.params;
@@ -74,10 +75,11 @@ const StudentExamList = ({ route }) => {
           keyExtractor={(item) => item.ExamID.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => navigateToExamDetails(item.ExamID)}>
-              <View>
+              <View style={styles.examContainer}>
+                <Icon name="note-outline" size={20} color="#000" style={styles.icon} />
                 <Text style={styles.examItem}>{item.ExamName}</Text>
-                <Divider />
               </View>
+              <Divider />
             </TouchableOpacity>
           )}
         />
@@ -90,6 +92,7 @@ const styles = StyleSheet.create({
   examItem: {
     fontSize: 18,
     padding: 10,
+    marginLeft: 10,
   },
   errorContainer: {
     flex: 1,
@@ -99,6 +102,15 @@ const styles = StyleSheet.create({
   searchBar: {
     margin: 10, // Adjust margin as needed
   },
+  examContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 10,
+    marginLeft: 25,
+  },
+  
 });
 
 export default StudentExamList;

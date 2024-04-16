@@ -16,6 +16,9 @@ import avatar8 from '../assets/avatar/avatar8.png';
 import avatar9 from '../assets/avatar/avatar9.png';
 import avatar10 from '../assets/avatar/avatar10.png';
 import backgroundImage from '../assets/educationImage.webp';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import AntIcon from 'react-native-vector-icons/AntDesign';
+import FontistoIcon from 'react-native-vector-icons/Fontisto';
 
 const ProfilePage = () => {
   const [profilePic, setProfilePic] = useState('');
@@ -181,18 +184,22 @@ const ProfilePage = () => {
         {!editMode ? (
           <Surface style={styles.profileInfo1} elevation={5}>
             <View style={styles.labelContainer}>
+              <AntIcon name="user" size={20} color="#000" style={styles.icon} />
               <Text style={[styles.labelText, styles.profileText]}>Name:</Text>
               <Text style={styles.profileText}>{name}</Text>
             </View>
             <View style={styles.labelContainer}>
+              <Icon name="birthday-cake" size={20} color="#000" style={styles.icon} />
               <Text style={[styles.labelText, styles.profileText]}>Date of Birth:</Text>
               <Text style={styles.profileText}>{dateOfBirth}</Text>
             </View>
             <View style={styles.labelContainer}>
+              <AntIcon name="phone" size={20} color="#000" style={styles.icon} />
               <Text style={[styles.labelText, styles.profileText]}>Phone Number:</Text>
               <Text style={styles.profileText}>{phoneNumber}</Text>
             </View>
             <View style={styles.labelContainer}>
+              <FontistoIcon name="email" size={20} color="#000" style={styles.icon} />
               <Text style={[styles.labelText, styles.profileText]}>Email:</Text>
               <Text style={styles.profileText}>{email}</Text>
             </View>
@@ -333,6 +340,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontWeight: 'bold',
+    marginRight: 5,
   },
   profileInfo2: {
     width: '100%',
@@ -385,6 +393,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+  },
+  icon: {
+    marginRight: 5,
   },
 });
 

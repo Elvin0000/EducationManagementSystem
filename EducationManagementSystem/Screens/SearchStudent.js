@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 import { Searchbar, Divider } from 'react-native-paper';
 import CustomHeader from '../Components/CustomHeader';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const SearchStudent = ({ navigation }) => {
   const [studentEmails, setStudentEmails] = useState([]);
@@ -77,7 +78,8 @@ const SearchStudent = ({ navigation }) => {
           keyExtractor={(item) => item}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => navigateToStudentExam(item)}>
-              <View>
+              <View style={styles.emailContainer}>
+                <Icon name="email" size={20} color="#000" style={styles.icon} />
                 <Text style={styles.emailItem}>{item}</Text>
                 <Divider />
               </View>
@@ -96,11 +98,22 @@ const styles = StyleSheet.create({
   emailItem: {
     fontSize: 18,
     padding: 10,
+    marginLeft: 10,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  icon: {
+    marginRight: 10,
+  },
+  emailContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
 });
 

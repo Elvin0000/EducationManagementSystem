@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 
 const CustomHeader = () => {
   const navigation = useNavigation();
@@ -15,8 +16,8 @@ const CustomHeader = () => {
     <Appbar.Header style={styles.header}>
       <Appbar.BackAction onPress={navigation.goBack} />
       <Text style={styles.title}>{route.name}</Text>
-      <TouchableOpacity onPress={navigateToHome}>
-        <Text style={styles.homeButton}>Home</Text>
+      <TouchableOpacity onPress={navigateToHome} style={styles.homeButton}>
+        <AntIcon name="home" size={20} style={styles.icon} />
       </TouchableOpacity>
     </Appbar.Header>
   );
@@ -39,10 +40,10 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   homeButton: {
-    fontFamily: 'Marker Felt', // Add your custom font here
-    color: '#4494ad',
-    fontSize: 16,
     marginRight: 16,
+  },
+  icon: {
+    color: '#4494ad',
   },
 });
 

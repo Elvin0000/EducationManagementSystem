@@ -4,6 +4,9 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import CustomHeader from '../Components/CustomHeader';
 import NavigateToHomeButton from '../Components/NavigateToHomeButton';
+import AntIcon from 'react-native-vector-icons/AntDesign';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const ApproveTeacher = () => {
   const [teacherEmails, setTeacherEmails] = useState([]);
@@ -72,10 +75,10 @@ const ApproveTeacher = () => {
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.approveButton} onPress={() => handleApprove(item)}>
-          <Text style={styles.buttonText}>Approve</Text>
+          <AntIcon name="check" size={20} color="green" style={styles.buttonIcon} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.rejectButton} onPress={() => handleReject(item)}>
-          <Text style={styles.buttonText}>Reject</Text>
+          <EntypoIcon name="cross" size={20} color="red" style={styles.buttonIcon} />
         </TouchableOpacity>
       </View>
     </View>
@@ -85,7 +88,10 @@ const ApproveTeacher = () => {
     <>
       <CustomHeader title="Approve Students" />
       <View style={styles.container}>
-        <Text style={styles.heading}>Teacher Approval Request:</Text>
+        <View style={styles.header}>
+          <MaterialIcon name="approval" size={24} color="#000" style={styles.icon} />
+          <Text style={styles.heading}>Teacher Approval Request:</Text>
+        </View>
         <FlatList
           data={teacherEmails}
           renderItem={renderItem}
@@ -145,29 +151,50 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   approveButton: {
-    backgroundColor: 'green',
+    backgroundColor: '#fff',
     padding: 10,
     borderRadius: 5,
-    marginLeft: 10,
+    marginVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: 'green',
+    height:45,
+    width:45,
   },
   rejectButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#fff',
     padding: 10,
     borderRadius: 5,
-    marginLeft: 5,
-    
+    marginVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: 'red',
+    marginLeft:10,
+    height:45,
+    width:45,
   },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize:12,
+  buttonIcon: {
+    marginRight: 5,
   },
   buttonWrapper: {
     position: 'absolute',
     bottom: 20,
     right: 20,
   },
-  
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  icon: {
+    marginRight: 10,
+    Size: 20,
+    marginBottom: 20,
+    fontWeight:"bold",
+    color:"#4494ad",
+  },
 });
 
 export default ApproveTeacher;

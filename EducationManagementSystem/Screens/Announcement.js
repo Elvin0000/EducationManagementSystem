@@ -104,7 +104,7 @@ const Announcement = () => {
         />
         {userData.admin === 1 || userData.teacher === 1 ? (
             <TouchableOpacity style={styles.addButton} onPress={handleAddAnnouncement}>
-            <Text style={styles.addButtonText}>Add Announcement</Text>
+            <Text style={styles.addButtonText}> + Announcement</Text>
             </TouchableOpacity>
         ) : null}
     </View>
