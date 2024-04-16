@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Avatar } from 'react-native-paper';
-import SelectAvatar from '../Screens/SelectAvatar';
+import avatar1 from '../assets/avatar/avatar1.png';
+import avatar2 from '../assets/avatar/avatar2.png';
+import avatar3 from '../assets/avatar/avatar3.png';
+import avatar4 from '../assets/avatar/avatar4.png';
+import avatar5 from '../assets/avatar/avatar5.png';
+import avatar6 from '../assets/avatar/avatar6.png';
+import avatar7 from '../assets/avatar/avatar7.png';
+import avatar8 from '../assets/avatar/avatar8.png';
+import avatar9 from '../assets/avatar/avatar9.png';
+import avatar10 from '../assets/avatar/avatar10.png';
+
 
 const ProfilePage = () => {
   const [profilePic, setProfilePic] = useState('');
@@ -13,6 +23,8 @@ const ProfilePage = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [editMode, setEditMode] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -37,20 +49,22 @@ const ProfilePage = () => {
     try {
       const response = await axios.get(`http://192.168.136.1:3002/viewProfile?email=${userEmail}`);
       const userProfile = response.data;
-      setProfilePic(userProfile.profilePic);
+      setProfilePic(userProfile.avatar ? avatars[userProfile.avatar - 1] : avatars[0]);
       setName(userProfile.username);
-
+  
       const rawDateOfBirth = new Date(userProfile.dob);
       const formattedDateOfBirth = `${rawDateOfBirth.getFullYear()}-${(rawDateOfBirth.getMonth() + 1).toString().padStart(2, '0')}-${rawDateOfBirth.getDate().toString().padStart(2, '0')}`;
-
+  
       setDateOfBirth(formattedDateOfBirth);
       setPhoneNumber(userProfile.phone_no);
-
+  
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      // Handle the error (display an error message or redirect the user)
+      Alert.alert('Error', 'Failed to fetch user profile. Please try again later.');
+      // Handle the error (e.g., display an error message to the user)
     }
   };
+  
 
   const handleEdit = () => {
     setEditMode(true);
@@ -75,6 +89,7 @@ const ProfilePage = () => {
         dob: dateOfBirth,
         phone_no: phoneNumber,
         email: email,
+        avatar: selectedAvatar,
       };
   
       const response = await axios.post(`http://192.168.136.1:3002/updateProfile?email=${email}`, updatedProfile);
@@ -96,69 +111,38 @@ const ProfilePage = () => {
       setEditMode(false);
     }
   };
-  
-  const handleDelete = async () => {
+
+  const handleAvatarSelection = (avatarIndex) => {
+    setSelectedAvatar(avatars[avatarIndex]); // Update selectedAvatar with the selected avatar
+  };
+
+  const handleProfilePicChange = async () => {
     try {
-      // Show confirmation prompt before deleting profile
-      Alert.alert(
-        'Confirmation',
-        'Are you sure you want to delete your profile?',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Delete',
-            onPress: async () => {
-              try {
-                // Retrieve the user data from AsyncStorage
-                const storedDataString = await AsyncStorage.getItem('userData');
-                
-                // Parse the stored data and extract the email
-                if (storedDataString) {
-                  const storedData = JSON.parse(storedDataString);
-                  const userEmail = storedData.email;
-              
-                  console.log('Deleting profile with email:', userEmail);
-              
-                  // Make the delete request with the retrieved email
-                  const response = await axios.delete(`http://192.168.136.1:3002/deleteProfile?email=${userEmail}`);
-              
-                  // Handle the response if needed
-                  // For example, you can check response status and display a success message
-                  if (response.status === 200) {
-                    Alert.alert('Success', 'Profile deleted successfully.');
-                    navigation.navigate('Login');
-                  } else {
-                    Alert.alert('Error', 'Failed to delete profile. Please try again later.');
-                  }
-                } else {
-                  console.error('User data is undefined.');
-                }
-              } catch (error) {
-                // Handle the error (e.g., show an error message to the user)
-                console.error('Error deleting user profile:', error);
-              
-                // Handle specific errors if needed
-                // For example, you can check if the error is a 404 and handle it differently
-                Alert.alert('Error', 'Failed to delete profile. Please try again later.');
-              }
-            },
-            style: 'destructive',
-          },
-        ],
-        { cancelable: true }
-      );
+      // Send a POST request to update the user's avatar
+      const response = await axios.post('http://192.168.136.1:3002/updateAvatar', {
+        email: email,
+        avatar: selectedAvatar, // Pass the selected avatar to the backend
+      });
+  
+      // Check if the update was successful
+      if (response.status === 200) {
+        // Update the profile picture displayed in the UI
+        setProfilePic(selectedAvatar);
+        // Close the modal
+        setModalVisible(false);
+        // Show success message
+        Alert.alert('Success', 'Avatar updated successfully.');
+      } else {
+        // Handle other response statuses if needed
+        Alert.alert('Error', 'Failed to update avatar. Please try again later.');
+      }
     } catch (error) {
-      console.error('Error showing confirmation prompt:', error);
+      console.error('Error updating avatar:', error);
+      // Handle the error (e.g., display an error message)
+      Alert.alert('Error', 'Failed to update avatar. Please try again later.');
     }
   };
-  
-  const handleProfilePicChange = (avatarPath) => {
-    setProfilePic(avatarPath);
-    navigation.goBack(); // Navigate back to the profile page after selecting an avatar
-  };
+
   const isValidDate = (date) => {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(date)) {
@@ -174,9 +158,22 @@ const ProfilePage = () => {
     return day >= 1 && day <= daysInMonth;
   };
 
+  const avatars = [
+    avatar1,
+    avatar2,
+    avatar3,
+    avatar4,
+    avatar5,
+    avatar6,
+    avatar7,
+    avatar8,
+    avatar9,
+    avatar10,
+  ];
+
   return (
     <View style={styles.container}>
-      <Avatar.Image size={100} source={profilePic ? { uri: profilePic } : require('../assets/avatar/avatar1.png')} />
+      <Avatar.Image size={100} source={profilePic} />
       <Text style={styles.heading}>Profile</Text>
       {!editMode ? (
         <View style={styles.profileInfo1}>
@@ -187,8 +184,8 @@ const ProfilePage = () => {
         </View>
       ) : (
         <View style={styles.profileInfo2}>
-          <TouchableOpacity onPress={() => navigation.navigate('SelectAvatar', { handleProfilePicChange })}>
-            <Text style={styles.changePicText}>Change Profile Picture</Text>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <Text style={styles.changePicText}>Change Avatar</Text>
           </TouchableOpacity>
           <TextInput
             style={styles.input}
@@ -212,9 +209,6 @@ const ProfilePage = () => {
       )}
       {!editMode ? (
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleDelete}>
-            <Text style={styles.buttonText}>Delete Profile</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handleEdit}>
             <Text style={styles.buttonText}>Edit Profile</Text>
           </TouchableOpacity>
@@ -224,6 +218,35 @@ const ProfilePage = () => {
           <Text style={styles.buttonText}>Save</Text>
         </TouchableOpacity>
       )}
+      {/* Avatar selection modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.heading}>Select Avatar</Text>
+            <View style={styles.avatarContainer}>
+              {avatars.map((avatar, index) => (
+                <TouchableOpacity key={index} onPress={() => handleAvatarSelection(index)}>
+                  <Avatar.Image
+                    size={100}
+                    source={avatar}
+                    style={[styles.avatar, selectedAvatar === avatar && styles.selectedAvatar]}
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TouchableOpacity style={styles.saveButton} onPress={handleProfilePicChange}>
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -234,6 +257,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: 'white', // Set background color to white
   },
   heading: {
     fontSize: 24,
@@ -255,7 +279,7 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: '100%',
   },
   button: {
@@ -291,7 +315,42 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 50,
   },
-
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  avatarContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  avatar: {
+    margin: 10,
+  },
+  selectedAvatar: {
+    borderWidth: 2,
+    borderColor: '#4494ad',
+  },
+  saveButton: {
+    marginTop: 20,
+    backgroundColor: '#4494ad',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 18,
+  },
 });
 
 export default ProfilePage;

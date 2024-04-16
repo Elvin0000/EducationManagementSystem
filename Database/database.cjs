@@ -54,7 +54,7 @@ const addUser = async (email, password, selectedRole) => {
 // Use the pool to execute queries
 app.get('/users', async (req, res) => {
   try {
-    const [rows, fields] = await pool.execute('SELECT username, password, email, DATE_FORMAT(dob, "%Y-%m-%d") AS dob, phone_no, student, teacher, admin FROM users');
+    const [rows, fields] = await pool.execute('SELECT username, password, email, DATE_FORMAT(dob, "%Y-%m-%d") AS dob, phone_no, student, teacher, admin, avatar FROM users');
     res.status(200).json(rows);
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -159,6 +159,7 @@ app.get('/viewProfile', async (req, res) => {
     const query = `
       SELECT
         username,
+        avatar,
         dob,
         phone_no,
         student,
@@ -188,6 +189,7 @@ app.get('/viewProfile', async (req, res) => {
     // Extract user profile data
     const userProfile = {
       username: rows[0].username,
+      avatar: rows[0].avatar,
       dob: rows[0].dob,
       phone_no: rows[0].phone_no,
       student: rows[0].student,
@@ -245,6 +247,110 @@ app.post('/updateProfile', async (req, res) => {
   }
 });
 
+app.post('/updateAvatar', async (req, res) => {
+  try {
+    const { email, avatar } = req.body;
+
+    if (!email || !avatar) {
+      return res.status(400).json({ message: 'Missing email or avatar data.' });
+    }
+
+    // Update the user's avatar in the database
+    const query = `
+      UPDATE users
+      SET avatar = ?
+      WHERE email = ?;
+    `;
+
+    await pool.execute(query, [avatar, email]);
+
+    res.status(200).json({ message: 'Avatar updated successfully.' });
+  } catch (error) {
+    console.error('Error updating avatar:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// GET endpoint to fetch password based on email
+app.get('/getPassword', async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    // Check if email is provided
+    if (!email) {
+      return res.status(400).json({ message: 'Invalid request. Missing email parameter.' });
+    }
+
+    // Your SQL query to fetch user password based on email
+    const query = `
+      SELECT
+        password
+      FROM
+        users
+      WHERE
+        email = ?;
+    `;
+
+    // Execute the query
+    const [rows] = await pool.execute(query, [email]);
+
+    // Check if the user with the provided email exists
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Extract user password
+    const password = rows[0].password;
+
+    // Send the password as a response
+    res.status(200).json({ password });
+  } catch (error) {
+    console.error('Error retrieving password:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+// PUT endpoint to update password based on email
+app.put('/updatePassword', async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    // Check if email and newPassword are provided
+    if (!email || !newPassword) {
+      return res.status(400).json({ error: 'Email and newPassword are required' });
+    }
+
+    // Update the password in the database
+    const updatePasswordQuery = `
+      UPDATE users
+      SET
+        password = ?
+      WHERE
+        email = ?;
+    `;
+
+    const [updateResult] = await pool.execute(updatePasswordQuery, [newPassword, email]);
+
+    // Check if the password was successfully updated
+    if (updateResult.affectedRows > 0) {
+      return res.status(200).json({ message: 'Password updated successfully' });
+    } else {
+      return res.status(404).json({ error: 'User not found or password not updated' });
+    }
+  } catch (error) {
+    console.error('Error updating password:', error);
+    return res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+});
+
+
+
+
+
+
+
+
 // const query = `
 //   SELECT      
 //     username, 
@@ -269,7 +375,8 @@ app.delete('/deleteProfile', async (req, res) => {
         dob,      
         phone_no, 
         student,  
-        teacher,  
+        teacher,
+        avatar,  
         admin     
       FROM        
         users     
