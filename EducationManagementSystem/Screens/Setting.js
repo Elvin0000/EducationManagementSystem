@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput, Alert, Image, ScrollView , KeyboardAvoidingView } from 'react-native';
 import { Divider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native'; 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import changePasswordImage from '../assets/application/changepassword.jpg'; 
 
 const Setting = () => {
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
@@ -214,80 +215,90 @@ const Setting = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={handleChangePassword}>
-        <View style={styles.item}>
-          <Icon name="password" size={20} color="#000" style={styles.icon} />
-          <Text style={styles.clickableText}>Change Password</Text>
-        </View>
-      </TouchableOpacity>
-      <Divider />
-      <TouchableOpacity onPress={handleDeleteAccount}>
-        <View style={styles.item}>
-          <AntIcon name="deleteuser" size={20} color="#000" style={styles.icon} />
-          <Text style={styles.clickableText}>Delete Account</Text>
-        </View>
-      </TouchableOpacity>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={changePasswordModalVisible}
-        onRequestClose={handleCloseModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Change Password</Text>
-            <>
-              <Text style={styles.passwordMessage}>
-                1. Choose a strong password and do not reuse it for other accounts.
-              </Text>
-              <Text style={styles.passwordMessage1}>
-                2. Changing your password will sign you out from the app. You will need to log in again
-                using your new password.
-              </Text>
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>Previous Password</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter previous password"
-                  secureTextEntry={true}
-                  value={previousPassword}
-                  onChangeText={(text) => setPreviousPassword(text)}
-                />
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>New Password</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter new password"
-                  secureTextEntry={true}
-                  value={newPassword}
-                  onChangeText={(text) => setNewPassword(text)}
-                />
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>Confirm New Password</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter confirmed password"
-                  secureTextEntry={true}
-                  value={confirmPassword}
-                  onChangeText={(text) => setConfirmPassword(text)}
-                />
-              </View>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleCloseModal} style={styles.button}>
-                  <Text style={styles.buttonText}>Back</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleDoneChangePassword} style={[styles.button, styles.doneButton]}>
-                  <Text style={styles.buttonText}>Done</Text>
-                </TouchableOpacity>
-              </View>
-            </>
+    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={handleChangePassword}>
+          <View style={styles.item}>
+            <Icon name="password" size={20} color="#000" style={styles.icon} />
+            <Text style={styles.clickableText}>Change Password</Text>
           </View>
-        </View>
-      </Modal>
-    </View>
+        </TouchableOpacity>
+        <Divider />
+        <TouchableOpacity onPress={handleDeleteAccount}>
+          <View style={styles.item}>
+            <AntIcon name="deleteuser" size={20} color="#000" style={styles.icon} />
+            <Text style={styles.clickableText}>Delete Account</Text>
+          </View>
+        </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={changePasswordModalVisible}
+          onRequestClose={handleCloseModal}
+        >
+        <KeyboardAvoidingView
+          behavior="height"
+          style={styles.keyboardAvoidingContainer}
+        ></KeyboardAvoidingView>
+
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Change Password</Text>
+              <>
+                <Text style={styles.passwordMessage}>
+                  1. Choose a strong password and do not reuse it for other accounts.
+                </Text>
+                <Text style={styles.passwordMessage1}>
+                  2. Changing your password will sign you out from the app. You will need to log in again
+                  using your new password.
+                </Text>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.label}>Previous Password</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter previous password"
+                    secureTextEntry={true}
+                    value={previousPassword}
+                    onChangeText={(text) => setPreviousPassword(text)}
+                  />
+                </View>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.label}>New Password</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter new password"
+                    secureTextEntry={true}
+                    value={newPassword}
+                    onChangeText={(text) => setNewPassword(text)}
+                  />
+                </View>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.label}>Confirm New Password</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter confirmed password"
+                    secureTextEntry={true}
+                    value={confirmPassword}
+                    onChangeText={(text) => setConfirmPassword(text)}
+                  />
+                </View>
+                
+                <Image source={changePasswordImage} style={styles.modalImage} />
+
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity onPress={handleCloseModal} style={styles.button}>
+                    <Text style={styles.buttonText}>Back</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleDoneChangePassword} style={[styles.button, styles.doneButton]}>
+                    <Text style={styles.buttonText}>Done</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -324,9 +335,17 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 25,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 10,
     color:'#4494ad',
+    fontFamily: 'Courgette-Regular',
+  },
+  modalImage: {
+    height: 200, // Adjust the height to fit your design
+    width: '90%', // Adjust the width to fit your design
+    alignSelf: 'center',
+    resizeMode: 'contain', // Use 'contain' to fit the entire image within the specified dimensions
+    marginBottom: 1, // Adjust spacing as needed
   },
   closeButton: {
     backgroundColor: '#DDDDDD',
@@ -381,6 +400,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
   },
 });
 

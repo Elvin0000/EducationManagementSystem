@@ -77,14 +77,17 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     // Check if the dateOfBirth follows the format yyyy-mm-dd and is a valid date
-    if (!isValidDate(dateOfBirth)) {
+    if (dateOfBirth && !isValidDate(dateOfBirth)) {
       Alert.alert('Error', 'Please enter a valid date of birth in the format yyyy-mm-dd.');
       return;
     }
   
-    // Check if required fields are not empty
-    if (!name.trim() || !phoneNumber.trim()) {
-      Alert.alert('Error', 'Please fill in all required fields.');
+    if (!name ) {
+      Alert.alert('Error', 'Please enter your name.');
+      return;
+    }
+    if ( !phoneNumber) {
+      Alert.alert('Error', 'Please enter your phone number.');
       return;
     }
   
@@ -116,6 +119,8 @@ const ProfilePage = () => {
       setEditMode(false);
     }
   };
+  
+  
 
   const handleAvatarSelection = (avatarIndex) => {
     setSelectedAvatar(avatars[avatarIndex]); // Update selectedAvatar with the selected avatar

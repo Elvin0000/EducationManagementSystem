@@ -14,7 +14,7 @@ const CustomHeader = () => {
 
   return (
     <Appbar.Header style={styles.header}>
-      <Appbar.BackAction onPress={navigation.goBack} />
+      <Appbar.BackAction onPress={navigation.goBack} color="#4494ad"/>
       <Text style={styles.title}>{route.name}</Text>
       <TouchableOpacity onPress={navigateToHome} style={styles.homeButton}>
         <AntIcon name="home" size={20} style={styles.icon} />
@@ -33,10 +33,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   title: {
-    fontFamily: 'Marker Felt', 
+    fontFamily: 'IBMPlexSerif-Bold', 
     color: '#4494ad',
     fontSize: 18,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginLeft: 16,
   },
   homeButton: {

@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native
 import axios from 'axios';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Searchbar } from 'react-native-paper';
+import { Searchbar, Divider } from 'react-native-paper';
 import CustomHeader from '../Components/CustomHeader';
 
 const Announcement = () => {
@@ -76,6 +76,7 @@ const Announcement = () => {
           <Text>{item.announced_by}</Text>
           <Text>{formatDate(item.announced_at)}</Text>
         </View>
+        <Divider style={styles.divider} />
       </View>
     </TouchableOpacity>
   );
@@ -121,15 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 5,
     padding: 15,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 20,
   },
   bold: {
     fontWeight: 'bold',
@@ -137,7 +129,6 @@ const styles = StyleSheet.create({
   infoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
   },
   searchBar: {
     marginTop: 10,
@@ -159,6 +150,11 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  divider: {
+    marginVertical: 5,
+    backgroundColor: '#ccc',
+    
   },
 });
 

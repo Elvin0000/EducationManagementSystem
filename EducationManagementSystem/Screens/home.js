@@ -161,7 +161,7 @@ const Home = () => {
           [ { label: "Go", onPress: handleViewResult }]
         )}
 
-        {(userData.admin === 1 || userData.teacher === 1) && renderCard(
+        {(userData.admin === 1 || userData.teacher === 1|| userData.parent === 1) && renderCard(
           "Manage Exam Results",
           "With this function, you can manage and search for specific exam results.",
           manageResultImage2,
