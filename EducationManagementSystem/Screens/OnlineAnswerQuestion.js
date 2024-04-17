@@ -153,7 +153,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 20,
     color: "#4494ad",
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontFamily: 'Courgette-Regular',
   },
   questionContainer: {
     backgroundColor: '#fff',

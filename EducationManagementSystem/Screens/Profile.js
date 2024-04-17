@@ -15,7 +15,8 @@ import avatar7 from '../assets/avatar/avatar7.png';
 import avatar8 from '../assets/avatar/avatar8.png';
 import avatar9 from '../assets/avatar/avatar9.png';
 import avatar10 from '../assets/avatar/avatar10.png';
-import backgroundImage from '../assets/educationImage.webp';
+// import backgroundImage from '../assets/application/educationImage.webp';
+import backgroundImage from '../assets/carousel/edu6.jpg';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
@@ -292,8 +293,9 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
     marginBottom: 20,
-    fontWeight: 'bold',
-    color: '#4494ad',
+    // fontWeight: 'bold',
+    color: '#5d0aa1',
+    fontFamily: 'Courgette-Regular',
   },
   changePicText: {
     color: 'blue',
@@ -314,7 +316,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    backgroundColor: '#4494ad',
+    backgroundColor: '#5d0aa1',
     padding: 10,
     alignItems: 'center',
     borderRadius: 5,
@@ -376,11 +378,11 @@ const styles = StyleSheet.create({
   },
   selectedAvatar: {
     borderWidth: 2,
-    borderColor: '#4494ad',
+    borderColor: '#5d0aa1',
   },
   saveButton: {
     marginTop: 20,
-    backgroundColor: '#4494ad',
+    backgroundColor: '#5d0aa1',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

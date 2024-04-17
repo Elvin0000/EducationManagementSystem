@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `phone_no` varchar(15),
     `student` int DEFAULT 0,
     `teacher` int DEFAULT 0,
+    `parent` int DEFAULT 0,
     `admin` int DEFAULT 0,
     `selectedRole` varchar(10) DEFAULT NULL
 );
@@ -100,14 +101,14 @@ INSERT INTO announcement (announcement_text, announced_by)
 VALUES ('Please be informed that the office will be closed on Friday for maintenance.', 'test1@example.com');
 
 -- Inserting data for users
-INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
-VALUES ('John Doe', 'abcdef', 'john@example.com', '1990-01-01', '0123456789', 1, 0, 0,'');
+INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`,`parent`, `admin`,`selectedRole`,`avatar`)
+VALUES ('John Doe', 'abcdef', 'john@example.com', '1990-01-01', '0123456789', 1, 0, 0, 0,'',17);
 
-INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
-VALUES ('Test1', 'test', 'test1@example.com', '1990-01-01', '0123456789', 0, 1, 0,'');
+INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `parent`, `admin`,`selectedRole`,`avatar`)
+VALUES ('Test1', 'test', 'test1@example.com', '1990-01-01', '0123456789', 0, 1, 0, 0,'',17);
 
-INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`, `admin`,`selectedRole`)
-VALUES ('Test2', 'test', 'test2@example.com', '1990-01-01', '0123456789', 0, 0, 1,'');
+INSERT INTO `users` (`username`, `password`, `email`, `dob`, `phone_no`, `student`, `teacher`,`parent`, `admin`,`selectedRole`,`avatar`)
+VALUES ('Test2', 'test', 'test2@example.com', '1990-01-01', '0123456789', 0, 0, 0, 1,'',17);
 
 -- Inserting data for examinations
 INSERT INTO `examinations` (`ExamID`, `ExamName`, `ExamDate`, `email`)

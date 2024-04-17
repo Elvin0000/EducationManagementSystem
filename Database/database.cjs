@@ -54,7 +54,7 @@ const addUser = async (email, password, selectedRole) => {
 // Use the pool to execute queries
 app.get('/users', async (req, res) => {
   try {
-    const [rows, fields] = await pool.execute('SELECT username, password, email, DATE_FORMAT(dob, "%Y-%m-%d") AS dob, phone_no, student, teacher, admin, avatar FROM users');
+    const [rows, fields] = await pool.execute('SELECT username, password, email, DATE_FORMAT(dob, "%Y-%m-%d") AS dob, phone_no, student, teacher, parent, admin, avatar FROM users');
     res.status(200).json(rows);
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -97,7 +97,7 @@ app.get('/userDetails', async (req, res) => {
 
     // Query the database to fetch user details
     const [userDataRows, userDataFields] = await pool.execute(
-      'SELECT email, student, teacher, admin, selectedRole FROM users WHERE email = ?',
+      'SELECT email, student, teacher, parent, admin, selectedRole FROM users WHERE email = ?',
       [userEmail]
     );
 
@@ -109,6 +109,7 @@ app.get('/userDetails', async (req, res) => {
         student: userDataRows[0].student,
         teacher: userDataRows[0].teacher,
         admin: userDataRows[0].admin,
+        parent: userDataRows[0].parent,
         selectedRole: userDataRows[0].selectedRole
       };
 
@@ -164,6 +165,7 @@ app.get('/viewProfile', async (req, res) => {
         phone_no,
         student,
         teacher,
+        parent,
         admin
       FROM
         users
@@ -194,6 +196,7 @@ app.get('/viewProfile', async (req, res) => {
       phone_no: rows[0].phone_no,
       student: rows[0].student,
       teacher: rows[0].teacher,
+      parent: rows[0].parent,
       admin: rows[0].admin,
     };
 
@@ -357,7 +360,8 @@ app.put('/updatePassword', async (req, res) => {
 //     dob,      
 //     phone_no, 
 //     student,  
-//     teacher,  
+//     teacher,
+//     parent,  
 //     admin     
 //   FROM        
 //     users     
@@ -376,6 +380,7 @@ app.delete('/deleteProfile', async (req, res) => {
         phone_no, 
         student,  
         teacher,
+        parent,
         avatar,  
         admin     
       FROM        
@@ -801,6 +806,63 @@ app.put('/users/:email/approveTeacher', async (req, res) => {
 
 // API endpoint to reject a teacher
 app.put('/users/:email/rejectTeacher', async (req, res) => {
+  const email = req.params.email;
+  console.log('Received request to reject user with email:', email);
+
+  try {
+    // Update the user's selectedRole to null
+    await pool.query('UPDATE users SET selectedRole = ? WHERE email = ?', [null, email]);
+
+    console.log('User with email', email, 'has been rejected.');
+
+    res.status(200).json({ success: true, message: 'User has been rejected' });
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to get all parent emails
+app.get('/approveParents', async (req, res) => {
+  try {
+    // Query to select emails of parents
+    const query = 'SELECT email FROM users WHERE selectedRole = "parent"';
+    // Execute the query
+    const [rows] = await pool.query(query);
+    // Extract emails from the query result
+    const parentEmails = rows.map(row => row.email);
+    // Send the emails as response
+    res.status(200).json(parentEmails);
+  } catch (error) {
+    console.error('Error fetching parent emails:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+app.put('/users/:email/approveParent', async (req, res) => {
+  const email = req.params.email;
+  console.log('Received request to approve user with email:', email);
+
+  try {
+    // Execute the database query
+    await pool.query('UPDATE users SET parent = ?, selectedRole = ? WHERE email = ?', [1, null, email]);
+
+    // This code will run after the query is completed successfully
+    console.log('User role updated successfully.');
+    
+    // Send response indicating successful approval
+    res.status(200).json({ success: true, message: 'User has been approved as a parent' });
+  } catch (error) {
+    // Handle any errors that occur during the query execution
+    console.error('Error updating user role:', error);
+
+    // Send response indicating failure due to internal server error
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+// API endpoint to reject a parent
+app.put('/users/:email/rejectParent', async (req, res) => {
   const email = req.params.email;
   console.log('Received request to reject user with email:', email);
 

@@ -116,8 +116,9 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     marginBottom: 20,
-    fontWeight:"bold",
+    // fontWeight:"bold",
     color:"#4494ad",
+    fontFamily: 'Courgette-Regular',
   },
   itemContainer: {
     flexDirection: 'row',

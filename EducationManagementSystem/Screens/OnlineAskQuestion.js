@@ -87,8 +87,9 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
     marginBottom: 20,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     color: '#4494ad',
+    fontFamily: 'Courgette-Regular',
   },
   input: {
     height: 200,

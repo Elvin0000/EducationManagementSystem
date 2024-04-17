@@ -1,18 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, BackHandler, Image} from 'react-native';
-import { Carousel } from 'react-native-ui-lib';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import academicAssistantImage from '../assets/academicAssistantImage.webp';
-import announcementImage from '../assets/announcementImage.jpg';
-import approveImage1 from '../assets/approveImage1.webp';
-import approveImage2 from '../assets/approveImage2.png';
-import approveImage3 from '../assets/approveImage3.jpg';
-import manageResultImage2 from '../assets/manageResultImage2.jpeg';
-import viewExamResultImage from '../assets/viewExamResultImage.jpeg';
-import viewResultImage from '../assets/viewResultImage.jpg';
-import examResultImage from '../assets/examResultImage.jpg';
-import predictImage from '../assets/predictImage.jpg';
+import loginImage from '../assets/application/loginImage.jpg';
 
 export default class LoginPage extends Component {
   constructor(props) {
@@ -75,7 +65,7 @@ export default class LoginPage extends Component {
         // Authentication successful, fetch user details
         try {
           const userDetailsResponse = await axios.get(`http://192.168.136.1:3002/userDetails?email=${email}`);
-          const { student, teacher, admin, selectedRole } = userDetailsResponse.data.userDetails;
+          const { student, teacher, admin, parent, selectedRole } = userDetailsResponse.data.userDetails;
   
           // Store user data in AsyncStorage
           const userData = {
@@ -83,6 +73,7 @@ export default class LoginPage extends Component {
             student: student,
             teacher: teacher,
             admin: admin,
+            parent: parent,
             selectedRole: selectedRole,
           };
           await AsyncStorage.setItem('userData', JSON.stringify(userData));
@@ -116,9 +107,6 @@ export default class LoginPage extends Component {
     }
   };
   
-  
-  
-
   debugAsyncStorage = async () => {
     try {
       const allKeys = await AsyncStorage.getAllKeys();
@@ -129,116 +117,108 @@ export default class LoginPage extends Component {
     }
   };
 
-// Handle hardware back button press
-handleBackButtonPress = () => {
-  const routeName = this.props.navigation.getState().routes.slice(-1)[0].name;
-  // Check if the current screen is the home screen
-  if (this.props.navigation.isFocused() && routeName === 'HomeScreen') {
-    // If on the home screen, prevent navigating back
-    return true;
-  }
-  // For other screens, allow navigating back
-  return false;
-};
+  // Handle hardware back button press
+  handleBackButtonPress = () => {
+    const routeName = this.props.navigation.getState().routes.slice(-1)[0].name;
+    // Check if the current screen is the home screen
+    if (this.props.navigation.isFocused() && routeName === 'HomeScreen') {
+      // If on the home screen, prevent navigating back
+      return true;
+    }
+    // For other screens, allow navigating back
+    return false;
+  };
 
+  render() {
+    const { navigation } = this.props;
+    const { email, password } = this.state;
 
+    return (
+      <View style={styles.container}>
+        {/* Single Image */}
+        {/* <Image source={loginImage} style={styles.singleImage} /> */}
 
+        {/* Login Form */}
+        <View style={styles.loginFormContainer}>
+        <Image source={loginImage} style={styles.singleImage} />
+          <Text style={styles.heading}>Login</Text>
 
-render() {
-  const { navigation } = this.props;
-  const { email, password } = this.state;
-
-  return (
-    <View style={styles.container}>
-      {/* Carousel */}
-      <Carousel 
-        containerStyle={styles.carouselContainer} 
-        loop 
-        autoplay 
-        autoplayInterval={3000}
-      >
-        <Image source={academicAssistantImage} style={styles.carouselImage} />
-        <Image source={announcementImage} style={styles.carouselImage} />
-        <Image source={approveImage1} style={styles.carouselImage} />
-        <Image source={approveImage2} style={styles.carouselImage} />
-        <Image source={approveImage3} style={styles.carouselImage} />
-        <Image source={manageResultImage2} style={styles.carouselImage} />
-        <Image source={viewExamResultImage} style={styles.carouselImage} />
-        <Image source={viewResultImage} style={styles.carouselImage} />
-        <Image source={examResultImage} style={styles.carouselImage} />
-        <Image source={predictImage} style={styles.carouselImage} />
-      </Carousel>
-
-      {/* Login Form */}
-      <View style={styles.loginFormContainer}>
-        <Text style={styles.heading}>Education Management System</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => this.setState({ email: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => this.setState({ password: text })}
-          secureTextEntry
-        />
-        <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-          <Text>Create an account</Text>
-        </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="User Email"
+            placeholderTextColor="#36a890" // Set the color of the placeholder text
+            value={email}
+            onChangeText={(text) => this.setState({ email: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#36a890" // Set the color of the placeholder text
+            value={password}
+            onChangeText={(text) => this.setState({ password: text })}
+            secureTextEntry
+            placeholderStyle={styles.placeholderStyle}
+          />
+          <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
-}
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-container: {
-  flex: 1,
-},
-carouselContainer: {
-  height: 200,
-  marginBottom: 20,
-},
-carouselImage: {
-  flex: 1,
-  resizeMode: 'cover',
-  width: '100%',
-  height: '100%',
-},
-loginFormContainer: {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: 20,
-},
-heading: {
-  fontSize: 24,
-  marginBottom: 20,
-},
-input: {
-  width: '100%',
-  height: 40,
-  borderColor: 'gray',
-  borderWidth: 1,
-  marginBottom: 10,
-  paddingLeft: 10,
-},
-button: {
-  width: '100%',
-  backgroundColor: '#4494ad',
-  padding: 10,
-  alignItems: 'center',
-  borderRadius: 5,
-  marginTop: 10,
-},
-buttonText: {
-  color: 'white',
-  fontSize: 18,
-},
+  container: {
+    flex: 1,
+    backgroundColor: 'white', // Set background color to white
+  },
+  singleImage: {
+    height: 200, // Adjust the height to your desired size
+    width: '90%', // Adjust the width as needed
+    alignSelf: 'center',
+    resizeMode: 'contain', // Use 'contain' to fit the entire image within the specified dimensions
+    marginBottom:15,
+  },
+  
+  loginFormContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  heading: {
+    fontSize: 24,
+    marginBottom: 35,
+    color:'#36a890',
+    fontWeight:'bold',
+  },
+  input: {
+    width: '90%',
+    height: 40,
+    borderColor: '#36a890',
+    borderWidth: 2,
+    marginBottom: 10,
+    marginLeft: 30,
+    marginRight: 30,
+    paddingLeft: 40, // Adjust the paddingLeft to make space for the placeholder text
+    borderRadius: 50, // Set borderRadius to apply rounded corners
+  },
+  
+  placeholderStyle: {
+    marginLeft: 100, // Adjust the left margin of the placeholder text
+  },
+  
+  button: {
+    width: '90%',
+    backgroundColor: '#36a890',
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 50,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+  },
 });

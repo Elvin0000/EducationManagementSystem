@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthProvider } from './AuthContext';
 
+import Application from './Screens/Application';
 import LoginPage from './Screens/LoginPage';
 import SignupPage from './Screens/SignupPage';
 import HomeScreen from './Screens/Home';
@@ -18,6 +19,7 @@ import OnlineAskQuestion from './Screens/OnlineAskQuestion';
 import OnlineAnswerQuestion from './Screens/OnlineAnswerQuestion';
 import ApproveStudent from './Screens/ApproveStudent';
 import ApproveTeacher from './Screens/ApproveTeacher';
+import ApproveParent from './Screens/ApproveParent';
 import PredictResult from './Screens/PredictResult';
 import Announcement from './Screens/Announcement';
 import AddAnnouncement from './Screens/AddAnnouncement';
@@ -52,7 +54,8 @@ const App = () => {
     <NavigationContainer ref={navigationRef} onReady={() => setIsReady(true)}>
       {isReady && (
         <AuthProvider>
-          <Stack.Navigator initialRouteName="Login" headerMode="none">
+          <Stack.Navigator initialRouteName="Application" headerMode="none">
+            <Stack.Screen name="Application" component={Application} />
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Signup" component={SignupPage} />
             <Stack.Screen name="HomeScreen" component={HomeScreen} />
@@ -67,6 +70,7 @@ const App = () => {
             <Stack.Screen name="OnlineAnswerQuestion" component={OnlineAnswerQuestion} />
             <Stack.Screen name="ApproveStudent" component={ApproveStudent} />
             <Stack.Screen name="ApproveTeacher" component={ApproveTeacher} />
+            <Stack.Screen name="ApproveParent" component={ApproveParent} />
             <Stack.Screen name="PredictResult" component={PredictResult} />
             <Stack.Screen name="Announcement" component={Announcement} />
             <Stack.Screen name="AddAnnouncement" component={AddAnnouncement} />

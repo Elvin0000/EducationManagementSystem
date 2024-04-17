@@ -206,7 +206,7 @@ const Setting = () => {
       // Clear AsyncStorage
       await AsyncStorage.clear();
       // Navigate to login screen
-      navigation.navigate('Login');
+      navigation.navigate('Application');
     } catch (error) {
       console.error('Error clearing AsyncStorage:', error);
       // Handle error
