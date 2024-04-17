@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomHeader from '../Components/CustomHeader';
 import { Divider } from 'react-native-paper'; // Import Divider from react-native-paper
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ViewResult = () => {
   const [email, setEmail] = useState('');
@@ -67,12 +68,13 @@ const ViewResult = () => {
           data={examinations}
           keyExtractor={(item) => item.ExamID.toString()}
           renderItem={({ item }) => (
-            <View>
-              <TouchableOpacity onPress={() => navigateToExamDetails(item.ExamID)}>
+            <TouchableOpacity onPress={() => navigateToExamDetails(item.ExamID)}>
+              <View style={styles.examContainer}>
+                <Icon name="note-outline" size={20} color="#000" style={styles.icon} />
                 <Text style={styles.examItem}>{item.ExamName}</Text>
-              </TouchableOpacity>
+              </View>
               <Divider />
-            </View>
+            </TouchableOpacity>
           )}
         />
       )}
@@ -84,6 +86,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  examContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   examItem: {
     fontSize: 18,
     padding: 10,
@@ -92,6 +98,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+    examContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 10,
+    marginLeft: 25,
   },
 });
 
