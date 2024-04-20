@@ -43,7 +43,7 @@ const OnlineAskQuestion = ({ navigation }) => {
       const userEmail = userData.email;
   
       // Post the question using the retrieved user email
-      await axios.post('http://192.168.136.1:3002/questions', { question_text: questionText, asked_by: userEmail });
+      await axios.post('http://192.168.136.1:3002/addQuestions', { question_text: questionText, asked_by: userEmail });
       setQuestionText('');
       navigation.goBack();
   

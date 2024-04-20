@@ -145,7 +145,7 @@ const ExamDetails = ({ route, navigation }) => {
   
       // Make API call to update the marks in the database
       const response = await fetch('http://192.168.136.1:3002/studentsExam/updateResult', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },

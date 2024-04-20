@@ -100,7 +100,7 @@ const ProfilePage = () => {
         avatar: selectedAvatar,
       };
   
-      const response = await axios.post(`http://192.168.136.1:3002/updateProfile?email=${email}`, updatedProfile);
+      const response = await axios.put(`http://192.168.136.1:3002/updateProfile?email=${email}`, updatedProfile);
   
       console.log('Profile saved successfully:', response.data);
   
@@ -129,7 +129,7 @@ const ProfilePage = () => {
   const handleProfilePicChange = async () => {
     try {
       // Send a POST request to update the user's avatar
-      const response = await axios.post('http://192.168.136.1:3002/updateAvatar', {
+      const response = await axios.put('http://192.168.136.1:3002/updateAvatar', {
         email: email,
         avatar: selectedAvatar, // Pass the selected avatar to the backend
       });

@@ -42,7 +42,7 @@ const AddAnnouncement = ({ navigation }) => {
       const userEmail = userData.email;
   
       // Post the announcement using the retrieved user email
-      await axios.post('http://192.168.136.1:3002/announcements', { announcement_text: announcementText, announced_by: userEmail });
+      await axios.post('http://192.168.136.1:3002/newAnnouncements', { announcement_text: announcementText, announced_by: userEmail });
       setAnnouncementText('');
   
       // Alert user that the announcement is posted successfully

@@ -61,7 +61,7 @@ const OnlineAnswerQuestion = ({ route }) => {
       const currentTime = new Date().toISOString();
   
       // Post the new answer
-      await axios.post(`http://192.168.136.1:3002/questions/${questionId}/answers`, {
+      await axios.post(`http://192.168.136.1:3002/questions/${questionId}/newAnswers`, {
         answer_text: newAnswer,
         answered_by: userEmail, // Use the user's email from AsyncStorage
         answered_at: currentTime, // Set the current time

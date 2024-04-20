@@ -208,7 +208,7 @@ app.get('/viewProfile', async (req, res) => {
   }
 });
 
-app.post('/updateProfile', async (req, res) => {
+app.put('/updateProfile', async (req, res) => {
   try {
     const { email, username, dob, phone_no } = req.body;
 
@@ -250,7 +250,7 @@ app.post('/updateProfile', async (req, res) => {
   }
 });
 
-app.post('/updateAvatar', async (req, res) => {
+app.put('/updateAvatar', async (req, res) => {
   try {
     const { email, avatar } = req.body;
 
@@ -313,7 +313,6 @@ app.get('/getPassword', async (req, res) => {
   }
 });
 
-
 // PUT endpoint to update password based on email
 app.put('/updatePassword', async (req, res) => {
   try {
@@ -347,29 +346,7 @@ app.put('/updatePassword', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-// const query = `
-//   SELECT      
-//     username, 
-//     dob,      
-//     phone_no, 
-//     student,  
-//     teacher,
-//     parent,  
-//     admin     
-//   FROM        
-//     users     
-//   WHERE       
-//     email = ?;
-// `;
-
-app.delete('/deleteProfile', async (req, res) => {
+app.delete('/deleteUser', async (req, res) => {
   try {
 
     const { email } = req.query;
@@ -518,8 +495,6 @@ app.get('/studentsExamList', async (req, res) => {
   }
 });
 
-
-
 app.get('/studentsExam/detailResult', async (req, res) => {
   try {
     const { email, examId } = req.query;
@@ -600,9 +575,7 @@ app.delete('/studentsExam/deleteResult', async (req, res) => {
   }
 });
 
-
-
-app.post('/studentsExam/updateResult', async (req, res) => {
+app.put('/studentsExam/updateResult', async (req, res) => {
   try {
     // Ensure that the required parameters are provided
     const { email, examId, updatedResults } = req.body;
@@ -654,7 +627,7 @@ app.get('/questions', async (req, res) => {
 });
 
 // Endpoint to post a new question
-app.post('/questions', async (req, res) => {
+app.post('/addQuestions', async (req, res) => {
   const { question_text, asked_by } = req.body;
   try {
     const [result] = await pool.query('INSERT INTO questions (question_text, asked_by) VALUES (?, ?)', [question_text, asked_by]);
@@ -695,7 +668,7 @@ app.get('/questions/:question_id/answers', async (req, res) => {
 });
 
 // Endpoint to post a new answer for a specific question
-app.post('/questions/:question_id/answers', async (req, res) => {
+app.post('/questions/:question_id/newAnswers', async (req, res) => {
   const { question_id } = req.params;
   const { answer_text, answered_by } = req.body;
   try {
@@ -890,7 +863,7 @@ app.get('/announcements', async (req, res) => {
   }
 });
 
-app.post('/announcements', async (req, res) => {
+app.post('/newAnnouncements', async (req, res) => {
   const { announcement_text, announced_by } = req.body;
   try {
     const [result] = await pool.query('INSERT INTO announcement (announcement_text, announced_by) VALUES (?, ?)', [announcement_text, announced_by]);
@@ -902,7 +875,7 @@ app.post('/announcements', async (req, res) => {
 });
 
 // Endpoint to update an announcement
-app.put('/announcements/:announcementId', async (req, res) => {
+app.put('/editAnnouncements/:announcementId', async (req, res) => {
   const { announcement_text } = req.body;
   const { announcementId } = req.params;
   try {
@@ -918,7 +891,7 @@ app.put('/announcements/:announcementId', async (req, res) => {
 });
 
 // Endpoint to delete an announcement
-app.delete('/announcements/:announcementId', async (req, res) => {
+app.delete('/deleteAnnouncements/:announcementId', async (req, res) => {
   const { announcementId } = req.params;
   try {
     const [result] = await pool.query('DELETE FROM announcement WHERE announcement_id = ?', [announcementId]);
@@ -931,8 +904,6 @@ app.delete('/announcements/:announcementId', async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
-
-
 
 // Define a basic route
 app.get('/', (req, res) => {

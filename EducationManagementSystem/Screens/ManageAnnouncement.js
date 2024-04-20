@@ -16,7 +16,7 @@ const ManageAnnouncement = ({ route, navigation }) => {
   const handleSave = async () => {
     try {
       // Make API call to update the announcement with edited text
-      const response = await axios.put(`http://192.168.136.1:3002/announcements/${announcement.announcement_id}`, {
+      const response = await axios.put(`http://192.168.136.1:3002/editAnnouncements/${announcement.announcement_id}`, {
         announcement_text: editedText,
       });
       if (response.data.success) {
@@ -49,7 +49,7 @@ const ManageAnnouncement = ({ route, navigation }) => {
           {
             text: 'Delete',
             onPress: async () => {
-              const response = await axios.delete(`http://192.168.136.1:3002/announcements/${announcement.announcement_id}`);
+              const response = await axios.delete(`http://192.168.136.1:3002/deleteAnnouncements/${announcement.announcement_id}`);
               if (response.data.success) {
                 // Handle success, such as navigating back to the previous screen
                 navigation.goBack();

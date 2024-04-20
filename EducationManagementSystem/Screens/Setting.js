@@ -160,7 +160,7 @@ const Setting = () => {
                             console.log('Deleting profile with email:', userEmail);
                         
                             // Make the delete request with the retrieved email
-                            const response = await axios.delete(`http://192.168.136.1:3002/deleteProfile?email=${userEmail}`);
+                            const response = await axios.delete(`http://192.168.136.1:3002/deleteUser?email=${userEmail}`);
                         
                             // Handle the response if needed
                             // For example, you can check response status and display a success message
